@@ -1,4 +1,4 @@
 SvgMapper
 =========
 
-From Aitof to Winkel Tripel, with style
+SVG from Aitoff to Winkel, with style
