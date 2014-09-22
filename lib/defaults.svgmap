@@ -1,0 +1,49 @@
+﻿# This file is a part of SvgMapper basic set.
+#
+# It defines default values that SvgMapper uses when no
+#  explicit value is available in the configuration file.
+#  It is recommended that you import this file in the first line
+#  of each of your configuration file. If you don't, everything will
+#  still work, provided you define all necessary resources. If you
+#  forget any ot them, expect some strange error messages.
+#
+# While you can modify this file to suit your needs, it is
+#  much better to set up separate files and import them after
+#  this one, which will override only those values that you define.
+
+# This is the fallback style for all texts that SvgMapper generates
+#  with graticule and place commands
+- style :
+    name    : default-text-style
+    attrs   : 
+        style : fill:#000000; font-size:12pt; font-family:Calibri
+
+# Default style for Lines command
+- style : 
+    name    : default-line-style
+    attrs   : 
+        style : fill:none; stroke:#FF8080; stroke-width:1px
+
+
+# Translation strings
+- strings : 
+    # The default projection is the identity. Not very useful,
+    #  but you can take several maps, scale them and arrange
+    #  them on an output page without re-projection
+    default-projection  : PlateCarree
+    # A format that produces labels like 24°37'52"E
+    #  It includes non-ascii characters and braces, 
+    #  so it must be quoted
+    default-label-format : "{deg}°{min}'{sec:.0f}\"{card}"
+    # Defined the content of the {card} format element.
+    #  The 'cardinal-directions' key has special processing: it
+    #  gets translated internally to a set of four strings, cardinal-north, 
+    #  to cardinal-west. Those strings can also be set directly.
+    cardinal-directions : [N, E, S, W]
+
+# You need a unit if you want to use the Lines command, but you may not
+#  want to measure anything. This is the fallback which is equal
+#  to 1 radian measured along a great circle.
+- unit : 
+    name    : no-unit
+    scale   : 1.0

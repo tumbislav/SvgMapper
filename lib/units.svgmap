@@ -1,0 +1,18 @@
+- unit :
+    name  : km
+    scale : 0.000156961
+- unit :
+    name  : li
+    scale : 0.001004552
+- unit :
+    name  : nl
+    scale : 0.005826401
+- unit :
+    name  : nm
+    scale : 0.000290692
+- unit :
+    name  : day's sail by trade ship
+    scale : 0.034958405
+- unit :
+    name  : day's sail by windwagon
+    scale : 0.013655627

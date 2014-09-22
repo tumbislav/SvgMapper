@@ -1,0 +1,5 @@
+- Match :
+    name    : rivers
+    layer   : water>>rivers
+    pattern :
+        style   : fill:none

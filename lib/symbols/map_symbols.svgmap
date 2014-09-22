@@ -1,0 +1,36 @@
+- library : 
+    name        : windrose-1607
+    filename    : compass_rose_1607.svg
+    symbols     : 
+        tiny    :
+            id      : g3494
+            scale   : 0.01
+            anchor  : [309.4, 400.0]
+        small   :
+            id      : g3494
+            scale   : 0.1
+            anchor  : [309.4, 400.0]
+        medium  :
+            id      : g3494
+            scale   : 0.5
+            anchor  : [309.4, 400.0]
+        big     :
+            id      : g3494
+            scale   : 1.0
+            anchor  : [309.4, 400.0]
+- library :
+    name        : windrose-brass
+    filename    : 1345862619.svg
+    symbols     :
+        small   :
+            id      : g5464
+            scale   : 0.1
+            anchor  : [413.02774, 699.211285]
+- library : 
+    name        : windrose-grayscale
+    filename    : Compass_Rose.svg
+    symbols     :
+        small   :
+            id      : g3098
+            scale   : 0.3
+            anchor  : [158.12, 312.0]

@@ -1,0 +1,90 @@
+- library : 
+    name        : wikimedia
+    filename    : basic-symbols.svg
+    symbols     : 
+        capital-1   :
+            id      : wikimedia-capital-1
+            anchor  : [60.648846, 68.452564]
+        capital-2   :
+            id      : wikimedia-capital-2
+            anchor  : [60.648846, 100.62592]
+        capital-3   :
+            id      : wikimedia-capital-3
+            anchor  : [60.648846, 128.91019]
+        town        :
+            id      : wikimedia-town
+            anchor  : [60.648846, 153.65893]
+        village     :
+            id      : wikimedia-village
+            anchor  : [60.648846, 177.34701]
+        building    :
+            id      : wikimedia-building
+            anchor  : [60.648846, 201.03509]
+        ruin        :
+            id      : wikimedia-ruin
+            anchor  : [60.648846, 228.9658]
+        dam         :
+            id      : wikimedia-dam
+            anchor  : [60.648846, 254.59842]
+        lighthouse  :
+            id      : wikimedia-lighthouse
+            anchor  : [60.648846, 284.12013]
+        wreck       :
+            id      : wikimedia-wreck
+            anchor  : [60.648846, 320.88969]
+        battle      :
+            id      : wikimedia-battle
+            anchor  : [60.648846, 351.64883]
+        christian   :
+            id      : wikimedia-christian
+            anchor  : [60.648846, 389.8326]
+        moslem      :
+            id      : wikimedia-moslem
+            anchor  : [60.648846, 423.42017]
+        chinese     :
+            id      : wikimedia-chinese
+            anchor  : [60.648846, 449.7599]
+        jewish      :
+            id      : wikimedia-jewish
+            anchor  : [60.648846, 479.81193]
+
+- library : 
+    name        : circular
+    filename    : basic-symbols.svg
+    symbols     : 
+        black-circle    :
+            id          : circular-circle-black
+            anchor      : [275, 75]
+        black-ring      :
+            id          : circular-ring-black
+            anchor      : [295, 75]
+        black-target    :
+            id          : circular-target-black
+            anchor      : [315, 75]
+        black-minus     :
+            id          : circular-minus-black
+            anchor      : [335, 75]
+        black-plus      :
+            id          : circular-plus-black
+            anchor      : [355, 75]
+        black-times     :
+            id          : circular-times-black
+            anchor      : [375, 75]
+        red-circle      :
+            id          : circular-circle-red
+            anchor      : [275, 105]
+        red-ring        :
+            id          : circular-ring-red
+            anchor      : [295, 105]
+        red-target      :
+            id          : circular-target-red
+            anchor      : [315, 105]
+        red-minus       :
+            id          : circular-minus-red
+            anchor      : [335, 105]
+        red-plus        :
+            id          : circular-plus-red
+            anchor      : [355, 105]
+        red-times       :
+            id          : circular-times-red
+            anchor      : [375, 105]

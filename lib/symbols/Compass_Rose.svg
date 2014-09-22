@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg3015"
+   enable-background="new 0 0 316.25 316.25"
+   sodipodi:docname="Compass_Rose.svg"
+   xml:space="preserve"
+   viewBox="0 0 316.25 316.25"
+   version="1.1"
+   y="0px"
+   x="0px"
+   inkscape:version="0.48.4 r9939"
+   width="100%"
+   height="100%"><defs
+   id="defs121" />
+
+
+<title
+   id="title3008">Compass Rose</title>
+<sodipodi:namedview
+   id="base"
+   bordercolor="#666666"
+   inkscape:pageshadow="2"
+   inkscape:window-y="26"
+   fit-margin-left="2"
+   pagecolor="#ffffff"
+   inkscape:window-height="1024"
+   inkscape:window-maximized="0"
+   inkscape:zoom="1.979899"
+   inkscape:window-x="74"
+   showgrid="false"
+   borderopacity="1.0"
+   inkscape:current-layer="svg3015"
+   inkscape:cx="254.70364"
+   inkscape:cy="152.27073"
+   fit-margin-top="2"
+   fit-margin-right="2"
+   fit-margin-bottom="2"
+   inkscape:window-width="1000"
+   inkscape:pageopacity="0.0"
+   inkscape:document-units="px"
+   inkscape:object-paths="true"
+   inkscape:snap-intersection-paths="true"
+   inkscape:object-nodes="true"
+   inkscape:snap-smooth-nodes="true">
+	</sodipodi:namedview>
+
+
+
+
+
+<g id="g3098">
+<linearGradient
+   id="SVGID_1_"
+   y2="158.12"
+   gradientUnits="userSpaceOnUse"
+   x2="244.48"
+   y1="158.12"
+   x1="71.765">
+	<stop
+   style="stop-color:#9E9E9E"
+   offset="0"
+   id="stop10" />
+	<stop
+   style="stop-color:#DBDBDB"
+   offset="1"
+   id="stop12" />
+</linearGradient>
+
+<linearGradient
+   id="SVGID_2_"
+   y2="158.12"
+   gradientUnits="userSpaceOnUse"
+   x2="93.325"
+   y1="158.12"
+   x1="222.92">
+	<stop
+   style="stop-color:#ADADAD"
+   offset="0"
+   id="stop17" />
+	<stop
+   style="stop-color:#CCCCCC"
+   offset="1"
+   id="stop19" />
+</linearGradient>
+
+<linearGradient
+   id="light-west_1_"
+   y2="179.24"
+   gradientUnits="userSpaceOnUse"
+   x2="237.23"
+   y1="154.05"
+   x1="235.91">
+	<stop
+   style="stop-color:#545454"
+   offset="0"
+   id="stop79" />
+	<stop
+   style="stop-color:#D6D6D6"
+   offset="1"
+   id="stop81" />
+</linearGradient>
+
+<linearGradient
+   id="dark-north_1_"
+   y2="77.285"
+   gradientUnits="userSpaceOnUse"
+   x2="143.52"
+   y1="82.965"
+   x1="172.74">
+	<stop
+   style="stop-color:#545454"
+   offset="0"
+   id="stop85" />
+	<stop
+   style="stop-color:#D6D6D6"
+   offset="1"
+   id="stop87" />
+</linearGradient>
+
+<linearGradient
+   id="dark-east_1_"
+   y2="178.25"
+   gradientUnits="userSpaceOnUse"
+   x2="78.718"
+   y1="152.7"
+   x1="80.504">
+	<stop
+   style="stop-color:#545454"
+   offset="0"
+   id="stop91" />
+	<stop
+   style="stop-color:#D6D6D6"
+   offset="1"
+   id="stop93" />
+</linearGradient>
+
+<linearGradient
+   id="dark-south_1_"
+   y2="245.25"
+   gradientUnits="userSpaceOnUse"
+   x2="183.19"
+   y1="227"
+   x1="133.06">
+	<stop
+   style="stop-color:#545454"
+   offset="0"
+   id="stop97" />
+	<stop
+   style="stop-color:#D6D6D6"
+   offset="1"
+   id="stop99" />
+</linearGradient>
+
+
+
+<radialGradient
+   id="SVGID_3_"
+   gradientUnits="userSpaceOnUse"
+   cy="158.12"
+   cx="158.12"
+   r="32.4">
+	<stop
+   style="stop-color:#000000"
+   offset=".1963"
+   id="stop106" />
+	<stop
+   style="stop-color:#BABABA"
+   offset="1"
+   id="stop108" />
+</radialGradient>
+
+<radialGradient
+   id="SVGID_4_"
+   gradientUnits="userSpaceOnUse"
+   cy="158.12"
+   cx="158.12"
+   r="18">
+	<stop
+   style="stop-color:#7D7D7D"
+   offset="0"
+   id="stop113" />
+	<stop
+   style="stop-color:#000000"
+   offset="1"
+   id="stop115" />
+</radialGradient>
+
+<circle
+     id="circle3"
+     cy="158.12"
+     r="90"
+     stroke-width="2.0588"
+     stroke="#000000"
+     cx="158.12" /><g
+     id="g5">
+		<circle
+   id="circle7"
+   fill="none"
+   stroke-width="2.25"
+   stroke-dasharray="1.4902,1.4902"
+   cx="158.12"
+   stroke="#FFFFFF"
+   cy="158.12"
+   r="87.75"
+   stroke-linejoin="bevel" />
+</g><circle
+     id="circle14"
+     fill="url(#SVGID_1_)"
+     stroke-width="2.239"
+     cx="158.12"
+     stroke="#000000"
+     cy="158.12"
+     r="86.36" /><circle
+     id="circle21"
+     fill="url(#SVGID_2_)"
+     stroke-width=".5"
+     cx="158.12"
+     stroke="#9C9C9C"
+     cy="158.12"
+     r="64.8" /><g
+     id="g23"
+     fill="#4A4A4A"
+     stroke-width=".3328"
+     stroke-linecap="round"
+     stroke="#000000"
+     stroke-linejoin="round">
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l58.5 27.279-36.162-35.41"
+   id="light-northeast_2_" />
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-27.279 58.5 35.41-36.162"
+   id="light-southeast_2_" />
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-58.5-27.279 36.162 35.41"
+   id="light-southwest_2_" />
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l27.279-58.5-35.41 36.162"
+   id="light-northwest_2_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l58.5 27.279-50.369-4.941"
+   id="dark-northeast_2_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-27.279 58.5 4.941-50.369"
+   id="dark-southeast_2_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-58.5-27.279 50.37 4.941"
+   id="dark-southwest_2_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l27.279-58.5-4.941 50.37"
+   id="dark-northwest_2_" />
+</g><g
+     id="g33"
+     fill="#4A4A4A"
+     stroke-width=".3328"
+     stroke-linecap="round"
+     stroke="#000000"
+     stroke-linejoin="round">
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-27.279-58.5 4.941 50.37"
+   id="light-northeast_1_" />
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l58.5-27.279-50.37 4.941"
+   id="light-southeast_1_" />
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l27.279 58.5-4.94-50.37"
+   id="light-southwest_1_" />
+		<path
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-58.5 27.279 50.37-4.94"
+   id="light-northwest_1_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-27.279-58.5 35.409 36.162"
+   id="dark-northeast_1_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l58.5-27.279-36.161 35.409"
+   id="dark-southeast_1_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l27.279 58.5-35.41-36.161"
+   id="dark-southwest_1_" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-58.5 27.279 36.162-35.41"
+   id="dark-northwest_1_" />
+</g><g
+     id="g45"
+     stroke-width=".4375"
+     stroke-linecap="round"
+     stroke="#000000"
+     stroke-linejoin="round">
+		<linearGradient
+   x1="98.125"
+   y1="128.12"
+   gradientTransform="matrix(-1 0 0 1 316.25 0)"
+   x2="158.12"
+   gradientUnits="userSpaceOnUse"
+   y2="128.12"
+   id="light-northeast_3_">
+		<stop
+   id="stop48"
+   offset="0"
+   style="stop-color:#CCCCCC" />
+		<stop
+   id="stop50"
+   offset="1"
+   style="stop-color:#F2F2F2" />
+	</linearGradient>
+		<path
+   fill="url(#light-northeast_3_)"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l60-60-60 28.75"
+   id="light-northeast" />
+		<linearGradient
+   x1="98.125"
+   y1="188.12"
+   gradientTransform="matrix(-1 0 0 1 316.25 0)"
+   x2="158.12"
+   gradientUnits="userSpaceOnUse"
+   y2="188.12"
+   id="light-southeast_3_">
+		<stop
+   id="stop54"
+   offset="0"
+   style="stop-color:#CCCCCC" />
+		<stop
+   id="stop56"
+   offset="1"
+   style="stop-color:#F2F2F2" />
+	</linearGradient>
+		<path
+   fill="url(#light-southeast_3_)"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l60 60-28.75-60"
+   id="light-southeast" />
+		<linearGradient
+   x1="158.12"
+   y1="188.12"
+   gradientTransform="matrix(-1 0 0 1 316.25 0)"
+   x2="218.12"
+   gradientUnits="userSpaceOnUse"
+   y2="188.12"
+   id="light-southwest_3_">
+		<stop
+   id="stop60"
+   offset="0"
+   style="stop-color:#CCCCCC" />
+		<stop
+   id="stop62"
+   offset="1"
+   style="stop-color:#F2F2F2" />
+	</linearGradient>
+		<path
+   fill="url(#light-southwest_3_)"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-60 60 60-28.75"
+   id="light-southwest" />
+		<linearGradient
+   x1="158.12"
+   y1="128.12"
+   gradientTransform="matrix(-1 0 0 1 316.25 0)"
+   x2="218.12"
+   gradientUnits="userSpaceOnUse"
+   y2="128.12"
+   id="light-northwest_3_">
+		<stop
+   id="stop66"
+   offset="0"
+   style="stop-color:#CCCCCC" />
+		<stop
+   id="stop68"
+   offset="1"
+   style="stop-color:#F2F2F2" />
+	</linearGradient>
+		<path
+   fill="url(#light-northwest_3_)"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-60-60 28.75 60"
+   id="light-northwest" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l60-60-28.75 60"
+   id="dark-northeast" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l60 60-60-28.75"
+   id="dark-southeast" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-60 60 28.75-60"
+   id="dark-southwest" />
+		<path
+   stroke-miterlimit="10"
+   inkscape:connector-curvature="0"
+   d="m158.12 158.12l-60-60 60 28.75"
+   id="dark-northwest" />
+</g><path
+     inkscape:connector-curvature="0"
+     d="m158.12 158.12l24-24-24-132"
+     id="light-north" /><path
+     inkscape:connector-curvature="0"
+     d="m158.12 158.12l-24-24-132 24"
+     id="light-east" /><path
+     inkscape:connector-curvature="0"
+     d="m158.12 158.12l-24 24 24 132"
+     id="light-south" /><path
+     inkscape:connector-curvature="0"
+     fill="url(#light-west_1_)"
+     d="m158.12 158.12l24 24 132-24"
+     id="light-west" /><path
+     inkscape:connector-curvature="0"
+     fill="url(#dark-north_1_)"
+     d="m158.12 158.12l-24-24 24-132"
+     id="dark-north" /><path
+     inkscape:connector-curvature="0"
+     fill="url(#dark-east_1_)"
+     d="m158.12 158.12l-24 24-132-24"
+     id="dark-east" /><path
+     inkscape:connector-curvature="0"
+     fill="url(#dark-south_1_)"
+     d="m158.12 158.12l24 24-24 132"
+     id="dark-south" /><path
+     inkscape:connector-curvature="0"
+     d="m158.12 158.12l24-24 132 24"
+     id="dark-west" /><circle
+     id="circle103"
+     fill="#FFFFFF"
+     r="36"
+     cx="158.12"
+     cy="158.12" /><circle
+     id="circle110"
+     fill="url(#SVGID_3_)"
+     r="32.4"
+     cx="158.12"
+     cy="158.12" /><circle
+     id="circle117"
+     fill="url(#SVGID_4_)"
+     r="18"
+     cx="158.12"
+     cy="158.12" /></g>
+<metadata
+   id="metadata119"><rdf:RDF><cc:Work><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><cc:license
+         rdf:resource="http://creativecommons.org/licenses/publicdomain/" /><dc:publisher><cc:Agent
+           rdf:about="http://openclipart.org/"><dc:title>Openclipart</dc:title></cc:Agent></dc:publisher><dc:title>Compass Rose</dc:title><dc:date>2012-10-22T14:48:18</dc:date><dc:description>Grayscale compass rose based on design uploaded by SeriousTux.</dc:description><dc:source>https://openclipart.org/detail/172846/compass-rose-by-ericdl-172846</dc:source><dc:creator><cc:Agent><dc:title>ericdl</dc:title></cc:Agent></dc:creator><dc:subject><rdf:Bag><rdf:li>cartography</rdf:li><rdf:li>compass</rdf:li><rdf:li>compass rose</rdf:li><rdf:li>grayscale</rdf:li><rdf:li>map</rdf:li></rdf:Bag></dc:subject></cc:Work><cc:License
+       rdf:about="http://creativecommons.org/licenses/publicdomain/"><cc:permits
+         rdf:resource="http://creativecommons.org/ns#Reproduction" /><cc:permits
+         rdf:resource="http://creativecommons.org/ns#Distribution" /><cc:permits
+         rdf:resource="http://creativecommons.org/ns#DerivativeWorks" /></cc:License></rdf:RDF></metadata></svg>

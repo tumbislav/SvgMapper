@@ -1,0 +1,80 @@
+# This file is a part of SvgMapper basic set.
+#
+# It defines some basic line, area and text styles to get
+#  you started. The recommended way of using it is to
+#  define a style set file which imports and a selection
+#  of these styles and renames them to something that makes
+#  sense within your project.
+#
+
+# Some plain vanilla line styles
+- style :
+    name    : line-black-thin
+    attrs   : 
+        style   : fill:none; stroke:#000000; stroke-width:0.2
+- style :
+    name    : line-black-thick
+    attrs   :
+        style   : fill:none; stroke:#000000; stroke-width:1.0
+
+# The next two are nice for unobtrusive graticules
+- style :
+    name    : line-gray-thin
+    attrs   :
+        style   : fill:none; stroke:#808080; stroke-width:0.2
+- style :
+    name    : line-gray-thin-dashed
+    attrs   : 
+        style   : fill:none; stroke:#808080; stroke-width:0.2; stroke-dasharray:2,1.5; stroke-dashoffset:0
+
+# Some variants to get you started on your own
+- style :
+    name    : line-red-thick
+    attrs   :
+        style   : fill:none; stroke:#FF0000; stroke-width:1.0
+- style :
+    name    : line-blue-green
+    attrs   : 
+        style   : fill:none; stroke:#0978ab;stroke-width:0.6;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4
+- style :
+    name    : line-dark-red
+    attrs   : 
+        style   : fill:none; stroke:#3030a0; stroke-width:3
+
+# A sample of text styles
+- style :
+    name    : text-gray-5
+    attrs   : 
+        style       : font-style:normal;font-weight:normal;fill:#808080;font-family:Calibri
+        font-size   : 5
+- style : 
+    name    : text-plain-6
+    attrs   : 
+        style       : font-style:normal;font-weight:normal;fill:#000000;font-family:Calibri
+        font-size   : 6
+- style : 
+    name    : text-plain-9
+    attrs   : 
+        style       : font-style:normal;font-weight:normal;fill:#000000;font-family:Calibri
+        font-size   : 9
+- style : 
+    name    : text-red-bold-12
+    attrs   : 
+        style       : font-style:normal;font-weight:bold;fill:#FF0000;font-family:Calibri
+        font-size   : 12
+
+# Truly nasty
+- style :
+    name : virulent
+    attrs   : 
+        style   : fill:#00AA00; stroke:#FF0000; stroke-width:5px
+
+# The following two are used in the sample set
+- style :
+    name : under-glow
+    attrs   : 
+        style   : fill:none; stroke:#aaeeaa; stroke-width:10px
+- style :
+    name : old-map
+    attrs   : 
+        style   : fill:#fffff0; stroke:#e89fa6; stroke-width:2px

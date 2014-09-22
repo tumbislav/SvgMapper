@@ -1,0 +1,18 @@
+﻿- strings : 
+    maj-lbl : "{deg}°{card}"
+    min-lbl : "{deg}°"
+    # A format that produces labels like 24°37'52"E
+    #  It includes non-ascii characters and braces, 
+    #  so it must be quoted
+    major-graticule-label-format : "{deg}°{min}'{sec:.0f}\"{card}"
+    minor-graticule-label-format : "{deg}°{min}'{sec:.0f}\"{card}"
+    # Defined the content of the {card} format element.
+    #  The cardinal-directions key has special processing: it
+    #  gets translated internally to a set of four strings, cardinal-north, 
+    #  to cardinal-west. Those strings can also be set directly.
+    cardinal-directions : [N, E, S, W]
+    # A long-winded label that uses many of the values that a line has
+    #  It will produce output like
+    #   5: 21.32 days by tonto to 20°7'4.17"E, 81°52'2.39"N
+    default-label-format    : "{count}: {length:.2f} {unit} 
+        to {x_deg}°{x_min}'{x_sec:.2f}\"{x_card},{y_deg}°{y_min}'{y_sec:.2f}\"{y_card}"

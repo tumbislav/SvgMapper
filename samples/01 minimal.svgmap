@@ -1,0 +1,14 @@
+# This is the shortest config file that does something marginally useful
+- import : ../lib/defaults
+- run : copy
+
+- map : 
+    name        : copy
+    file-in     : island.svg
+    file-out    : 01 minimal.svg
+    scale       : scale-equator
+    do :
+      - project : 
+            what    : paths
+            match   : .*
+            target  : main
