@@ -303,17 +303,19 @@ class Projection(Resource):
     def __init__(self, d):
         Resource.__init__(self)
         try:
-            self.name = get_or_default(d, 'name', None)
+            self.name = get_or_default(d, 'name', None, True)
             self.cls = d['class']
+            del d['class']
             self.projection = None
-            self.central_meridian = get_or_default(d, 'central-meridian', None)
-            self.reference_parallel = get_or_default(d, 'reference-parallel', None)
-            self.center_x = get_or_default(d, 'center-x', None) is not None
-            self.center_y = get_or_default(d, 'center-y', None) is not None
-            self.standard_parallel1 = get_or_default(d, 'standard-parallel1', None)
-            self.standard_parallel2 = get_or_default(d, 'standard-parallel2', None)
         except KeyError as ke:
             raise MapperException(MX_MISSING_PARAMETER, 'Projection.__init__', str(ke), self.name or 'projection')
+        self.y_0 = get_or_default(d, 'standard-parallel-1', None, True)
+        self.y_1 = get_or_default(d, 'standard-parallel-2', None, True)
+        self.y_0 = get_or_default(d, 'standard-meridian-1', None, True)
+        self.x_1 = get_or_default(d, 'standard-meridian-2', None, True)
+        self.x_ref = get_or_default(d, 'central-meridian', None, True)
+        self.y_ref = get_or_default(d, 'reference-parallel', None, True)
+        self.d = d
         logger.info(u'Loaded projection {}'.format(self))
 
     def initialize(self, the_map):
@@ -334,27 +336,23 @@ class Projection(Resource):
             else set it to the centre of the world rectangle
         :param the_map: The the_map that is using the projection
         """
-        if self.central_meridian:
-            x0 = self.central_meridian*pi/180
-        elif self.center_x:
-            x0 = (the_map.rect_world.x0 + the_map.rect_world.x1)*pi/360
-        else:
-            x0 = 0
-        if self.reference_parallel:
-            y0 = self.reference_parallel*pi/180
-        elif self.center_y:
-            y0 = (the_map.rect_world.y0 + the_map.rect_world.y1)*pi/360
-        else:
-            y0 = 0
-        if self.standard_parallel1 is None:
-            y1 = the_map.rect_world.y0*pi/180
-        else:
-            y1 = self.standard_parallel1*pi/180
-        if self.standard_parallel2 is None:
-            y2 = the_map.rect_world.y1*pi/180
-        else:
-            y2 = self.standard_parallel2*pi/180
-        self.projection = create_projection(self.cls, x0, y0, y1, y2)
+        try:
+            if self.x_ref is None or (isinstance(self.x_ref, basestring) and self.x_ref == 'center'):
+                    self.x_ref = (the_map.rect_world.x0 + the_map.rect_world.x1)*pi/360
+            else:
+                self.x_ref *= pi/180
+            if self.y_ref is None or (isinstance(self.y_ref, basestring) and self.y_ref == 'center'):
+                    self.y_ref = (the_map.rect_world.y0 + the_map.rect_world.y1)*pi/360
+            else:
+                self.y_ref *= pi/180
+            self.y_0 = (self.y_0 if self.y_0 else the_map.rect_world.y0)*pi/180
+            self.y_1 = (self.y_1 if self.y_1 else the_map.rect_world.y1)*pi/180
+            self.x_0 = (self.x_0 if self.x_0 else the_map.rect_world.x0)*pi/180
+            self.x_1 = (self.x_1 if self.x_1 else the_map.rect_world.x1)*pi/180
+        except:
+            raise MapperException(MX_WRONG_VALUE, 'Projection.initialize','reference-parallel', y_ref)
+
+        self.projection =
         return self
 
     def project(self, x, y):

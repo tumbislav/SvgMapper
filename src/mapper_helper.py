@@ -9,10 +9,13 @@ from itertools import chain
 logger = logging.getLogger('SvgMapper')
 
 
-def get_or_default(d, key, default):
+def get_or_default(d, key, default, delete=False):
     """ Returns the value specified by the key or the specified default. """
     if key in d:
-        return d[key]
+        k = d[key]
+        if delete:
+            del d[key]
+        return k
     else:
         return default
 

@@ -1,7 +1,7 @@
 # encoding: utf-8
 from math import *
 from mapper_helper import logger
-from scipy.interpolate import interp1d
+#from scipy.interpolate import interp1d
 
 
 epsilon = 0.0001
@@ -21,9 +21,9 @@ class Aitoff:
 
 
 class Albers:
-    def __init__(self, x0, y0, y1, y2):
+    def __init__(self, x0, y0, **kwargs):
         self.x0 = x0
-        self.n = (sin(y1) + sin(y2))/2
+        self.n = (sin(kwargs['reference-parallel-1']) + sin(y2))/2
         self.c = cos(y1)**2 + 2 * self.n * sin(y1)
         self.r0 = sqrt(self.c - 2 * self.n * sin(y0))/self.n
 
@@ -169,16 +169,16 @@ class WinkelTripel:
         return ((x-self.x0)*cos(self.y0) + 2*cos(y)*sin((x-self.x0)/2)*sinc)/2, (y + sin(y)*sinc)/2
 
 
-def create_projection(name, x0, y0, y1, y2):
-    logger.info('Creating `{}` centered ({:.2f}, {:.2f},) parallels {:.2f} and {:.2f}'.format(name, x0, y0, y1, y2))
+def create_projection(name, x0, y0, d):
+    logger.info('Creating `{}` centered ({:.2f}, {:.2f},) with {}'.format(name, x0, y0, d))
     if name == 'Aitoff':
         return Aitoff(x0)
     elif name == 'Albers':
-        return Albers(x0, y0, y1, y2)
+        return Albers(x0, y0, **d)
     elif name == 'Bonne':
-        return Bonne(x0, y1)
+        return Bonne(x0, y0)
     elif name == 'Bottomley':
-        return Bottomley(x0, y1)
+        return Bottomley(x0, y0)
     elif name == 'Cassini':
         return Cassini(x0)
     elif name == 'Gnomonic':
