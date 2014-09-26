@@ -3,6 +3,7 @@ __author__ = 'Marko Čibej'
 from mapper_resources import *
 from math import pi
 from mapper_helper import logger
+
 from itertools import izip_longest
 
 

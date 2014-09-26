@@ -309,12 +309,12 @@ class Projection(Resource):
             self.projection = None
         except KeyError as ke:
             raise MapperException(MX_MISSING_PARAMETER, 'Projection.__init__', str(ke), self.name or 'projection')
+        self.x_ref = get_or_default(d, 'central-meridian', None, True)
+        self.y_ref = get_or_default(d, 'reference-parallel', None, True)
         self.y_0 = get_or_default(d, 'standard-parallel-1', None, True)
         self.y_1 = get_or_default(d, 'standard-parallel-2', None, True)
         self.y_0 = get_or_default(d, 'standard-meridian-1', None, True)
         self.x_1 = get_or_default(d, 'standard-meridian-2', None, True)
-        self.x_ref = get_or_default(d, 'central-meridian', None, True)
-        self.y_ref = get_or_default(d, 'reference-parallel', None, True)
         self.d = d
         logger.info(u'Loaded projection {}'.format(self))
 
@@ -349,10 +349,11 @@ class Projection(Resource):
             self.y_1 = (self.y_1 if self.y_1 else the_map.rect_world.y1)*pi/180
             self.x_0 = (self.x_0 if self.x_0 else the_map.rect_world.x0)*pi/180
             self.x_1 = (self.x_1 if self.x_1 else the_map.rect_world.x1)*pi/180
-        except:
-            raise MapperException(MX_WRONG_VALUE, 'Projection.initialize','reference-parallel', y_ref)
+        except ValueError as ve:
+            raise MapperException(MX_WRONG_VALUE, 'Projection.initialize',None, ve.message)
 
-        self.projection =
+        self.projection = create_projection(self.cls, self.x_ref, self.y_ref,
+                                            self.x_0, self.x_1, self.y_0, self.y_1, self.d)
         return self
 
     def project(self, x, y):

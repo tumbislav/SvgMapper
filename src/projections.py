@@ -7,132 +7,135 @@ from mapper_helper import logger
 epsilon = 0.0001
 
 
+def sinc(a):
+    if abs(a) < epsilon:
+        return 1
+    else:
+        return a/sin(a)
+
+
 class Aitoff:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        a = acos(cos(y)*cos((x-self.x0)/2))
-        if abs(a) < epsilon:
-            sinc = 1
-        else:
-            sinc = a/sin(a)
-        return 2*cos(y)*sin((x-self.x0)/2)*sinc, sin(y)*sinc
+        a = sinc(acos(cos(y)*cos((x-self.x_ref)/2)))
+        return 2*cos(y)*sin((x-self.x_ref)/2)*a, sin(y)*a
 
 
 class Albers:
-    def __init__(self, x0, y0, **kwargs):
-        self.x0 = x0
-        self.n = (sin(kwargs['reference-parallel-1']) + sin(y2))/2
-        self.c = cos(y1)**2 + 2 * self.n * sin(y1)
-        self.r0 = sqrt(self.c - 2 * self.n * sin(y0))/self.n
+    def __init__(self, x_ref, y_ref, y_0, y_1):
+        self.x_ref = x_ref
+        self.n = (sin(y_0) + sin(y_1))/2
+        self.c = cos(y_0)**2 + 2 * self.n * sin(y_0)
+        self.r0 = sqrt(self.c - 2 * self.n * sin(y_ref))/self.n
 
     def project(self, x, y):
         r = sqrt(self.c - 2*self.n*sin(y))/self.n
-        t = self.n*(x - self.x0)
+        t = self.n*(x - self.x_ref)
         return r*sin(t), self.r0 - r*cos(t)
 
 
 class Bonne:
-    def __init__(self, x0, y1):
+    def __init__(self, x_ref, y1):
         assert y1 != 0
-        self.x0 = x0
+        self.x_ref = x_ref
         self.y1 = y1
 
     def project(self, x, y):
         r = 1/tan(self.y1) + self.y1 - y
-        t = (x - self.x0)*cos(y)/r
+        t = (x - self.x_ref)*cos(y)/r
         return r*sin(t), 1/tan(self.y1) - y*cos(t)
 
 
 class Bottomley:
-    def __init__(self, x0, y0):
-        self.sy0 = sin(y0)
-        self.x0 = x0
+    def __init__(self, x_ref, y_ref):
+        self.sy_ref = sin(y_ref)
+        self.x_ref = x_ref
 
     def project(self, x, y):
         r = pi/2 - y
-        t = x*self.sy0*sin(r)/r
+        t = x*self.sy_ref*sin(r)/r
         return r*sin(t), pi/2 - r*cos(t)
 
 
 class Cassini:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        return asin(cos(y)*sin(x - self.x0)), atan2(sin(y), cos(y)*cos(x - self.x0))
+        return asin(cos(y)*sin(x - self.x_ref)), atan2(sin(y), cos(y)*cos(x - self.x_ref))
 
 
 class EquidistantConic:
-    def __init__(self, x0, y0, y1, y2):
-        self.x0 = x0
+    def __init__(self, x_ref, y_ref, y1, y2):
+        self.x_ref = x_ref
         self.n = (sin(y1) + sin(y2))/2
         self.c = cos(y1)**2 + 2 * self.n * sin(y1)
-        self.r0 = sqrt(self.c - 2 * self.n * sin(y0))/self.n
+        self.r0 = sqrt(self.c - 2 * self.n * sin(y_ref))/self.n
 
     def project(self, x, y):
         r = sqrt(self.c - 2*self.n*sin(y))/self.n
-        t = self.n*(x - self.x0)
+        t = self.n*(x - self.x_ref)
         return r*sin(t), self.r0 - r*cos(t)
 
 
 class Sinusoidal:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        return (x - self.x0)*cos(y), y
+        return (x - self.x_ref)*cos(y), y
 
 
 class Gnomonic:
-    def __init__(self, x0, y0):
-        self.sy = sin(y0)
-        self.cy = cos(y0)
-        self.x0 = x0
+    def __init__(self, x_ref, y_ref):
+        self.sy = sin(y_ref)
+        self.cy = cos(y_ref)
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        cc = self.sy*sin(y) + self.cy*cos(y)*cos(x - self.x0)
-        return cos(y)*sin(x - self.x0)/cc, (self.cy*sin(y) - self.sy*cos(y)*cos(x - self.x0))/cc
+        cc = self.sy*sin(y) + self.cy*cos(y)*cos(x - self.x_ref)
+        return cos(y)*sin(x - self.x_ref)/cc, (self.cy*sin(y) - self.sy*cos(y)*cos(x - self.x_ref))/cc
 
 
 class Hammer:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        d = sqrt(2/(1 + cos(y)*sin((x - self.x0)/2)))
-        return 2*cos(y)*sin((x - self.x0)/2)*d, sin(y)*d
+        d = sqrt(2/(1 + cos(y)*sin((x - self.x_ref)/2)))
+        return 2*cos(y)*sin((x - self.x_ref)/2)*d, sin(y)*d
 
 
 class KavrayskiyVII:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        return 3*(x - self.x0)*sqrt(1./3 - (y/pi)**2)/2, y
+        return 3*(x - self.x_ref)*sqrt(1./3 - (y/pi)**2)/2, y
 
 
 class Mercator:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     def project(self, x, y):
-        return x - self.x0, log((1 + sin(y))/(1-sin(y)))
+        return x - self.x_ref, log((1 + sin(y))/(1-sin(y)))
 
 
 class PlateCarree:
-    def __init__(self, x0, y0):
-        self.x0 = x0
-        self.y0 = y0
+    def __init__(self, x_ref, y_ref):
+        self.x_ref = x_ref
+        self.y_ref = y_ref
 
     def project(self, x, y):
-        return x - self.x0, y - self.y0
+        return x - self.x_ref, y - self.y_ref
 
 
 class Mollweide:
-    def __init__(self, x0):
-        self.x0 = x0
+    def __init__(self, x_ref):
+        self.x_ref = x_ref
 
     @staticmethod
     def t(y):
@@ -152,50 +155,46 @@ class Mollweide:
 
     def project(self, x, y):
         st, ct = self.t(y)
-        return 2*sqrt(2)*(x - self.x0)*ct/pi, sqrt(2)*st
+        return 2*sqrt(2)*(x - self.x_ref)*ct/pi, sqrt(2)*st
 
 
 class WinkelTripel:
-    def __init__(self, x0, y0):
-        self.x0 = x0
-        self.y0 = y0
+    def __init__(self, x_ref, y_ref):
+        self.x_ref = x_ref
+        self.y_ref = y_ref
 
     def project(self, x, y):
-        a = acos(cos(y)*cos((x-self.x0)/2))
-        if abs(a) < epsilon:
-            sinc = 1
-        else:
-            sinc = a/sin(a)
-        return ((x-self.x0)*cos(self.y0) + 2*cos(y)*sin((x-self.x0)/2)*sinc)/2, (y + sin(y)*sinc)/2
+        a = sinc(acos(cos(y)*cos((x-self.x_ref)/2)))
+        return ((x-self.x_ref)*cos(self.y_ref) + 2*cos(y)*sin((x-self.x_ref)/2)*a)/2, (y + sin(y)*a)/2
 
 
-def create_projection(name, x0, y0, d):
-    logger.info('Creating `{}` centered ({:.2f}, {:.2f},) with {}'.format(name, x0, y0, d))
+def create_projection(name, x_ref, y_ref, x_0, x_1, y_0, y_1, d):
+    logger.info('Creating `{}` centered ({:.2f}, {:.2f},) with {}'.format(name, x_ref, y_ref, d))
     if name == 'Aitoff':
-        return Aitoff(x0)
+        return Aitoff(x_ref)
     elif name == 'Albers':
-        return Albers(x0, y0, **d)
+        return Albers(x_ref, y_ref, y_0, y_1)
     elif name == 'Bonne':
-        return Bonne(x0, y0)
+        return Bonne(x_ref, y_ref)
     elif name == 'Bottomley':
-        return Bottomley(x0, y0)
+        return Bottomley(x_ref, y_ref)
     elif name == 'Cassini':
-        return Cassini(x0)
+        return Cassini(x_ref)
     elif name == 'Gnomonic':
-        return Gnomonic(x0, y0)
+        return Gnomonic(x_ref, y_ref)
     elif name == 'Hammer':
-        return Hammer(x0)
+        return Hammer(x_ref)
     elif name == 'KavrayskiyVII':
-        return KavrayskiyVII(x0)
+        return KavrayskiyVII(x_ref)
     elif name == 'Mercator':
-        return Mercator(x0)
+        return Mercator(x_ref)
     elif name == 'Mollweide':
-        return Mollweide(x0)
+        return Mollweide(x_ref)
     elif name == 'PlateCarree':
-        return PlateCarree(x0, y0)
+        return PlateCarree(x_ref, y_ref)
     elif name == 'Sinusoidal':
-        return Sinusoidal(x0)
+        return Sinusoidal(x_ref)
     elif name == 'WinkelTripel':
-        return WinkelTripel(x0, y0)
+        return WinkelTripel(x_ref, y_ref)
     else:
         logger.error('Projection `{}` is not known'.format(name))

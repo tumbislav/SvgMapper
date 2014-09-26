@@ -202,7 +202,10 @@ class MapperException(Exception):
         elif self.reason == MX_MISSING_SVG:
             return u'{}: svg element {} not found in {}'.format(self.raised, self.name, self.value)
         elif self.reason == MX_WRONG_VALUE:
-            return u'{}: wrong value "{}" for parameter {}'.format(self.raised, self.value, self.name)
+            if self.name is None:
+                return u'{}: wrong value: {}'.format(self.raised, self.value)
+            else:
+                return u'{}: wrong value "{}" for parameter {}'.format(self.raised, self.value, self.name)
 
 
 # Unexpected condition: value=description
