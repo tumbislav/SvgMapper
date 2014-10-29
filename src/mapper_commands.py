@@ -56,7 +56,6 @@ class Project(Command):
 
     content_types = {'paths': 'path', 'texts': 'text', 'marks': 'g'}
 
-
     def __init__(self, d):
         Command.__init__(self, d)
         try:
@@ -86,13 +85,21 @@ class Project(Command):
                 # Paths are easy, since svgfig does most of the work for us
                 # Caution: any svg transformations are passed on unchanged
                 # (although the style attribute could be used in a sneaky way to override that)
+                if the_map.clip(pp):
+                    continue
                 self.style.apply(pp)
-                pp = svgfig.pathtoPath(pp).SVG(the_map.project)
+                pp = svgfig_mc.pathtoPath(pp).SVG(the_map.project)
             elif pp.t == 'text':
                 # for texts, we have to consider existing transforms
-                x, y = float(pp.attr['x']), float(pp.attr['y'])
+                try:
+                    x, y = float(pp.attr['x']), float(pp.attr['y'])
+                except KeyError:
+                    logger.error('Project.run: skipping text element {} without coordinates.'.format(pp.attr['id']))
+                    continue
                 m = svg_get_matrix(get_or_default(pp.attr, 'transform', ''))
                 x0, y0 = m[0]*x + m[2]*y + m[4], m[1]*x + m[3]*y + m[5]
+                if the_map.clip((x0, y0)):
+                    continue
                 x1, y1 = the_map.project(x0, y0)
                 m[4] += x1 - x0
                 m[5] += y1 - y0
@@ -100,7 +107,10 @@ class Project(Command):
             elif pp.t == 'g':
                 # For markers, the Symbol class together with svg_transform
                 # does most of the work of sizing, centering and placing the symbol
-                x, y = svg_center(pp)
+                #TODO: change the logic: a symbol is anything that matches the selection criteria
+                x0, y0 = svg_center(pp)
+                if the_map.clip((x0, y0)):
+                    continue
                 x1, y1 = the_map.project(x, y)
                 if self.replacement:
                     pp = svg_transform(self.replacement.get_svg(), self.replacement.anchor[0],
@@ -175,6 +185,7 @@ class Place(Command):
 
         Lines are drawn first, followed by symbols and finally text.
         """
+
         # Start by building a list of absolute positions in world coordinates.
         self.unit = the_map.get_unit(self.unit)
         x, y = self.at[0]*pi/180, self.at[1]*pi/180
@@ -199,13 +210,13 @@ class Place(Command):
             self.line_style = self.require_style(self.line_style, the_map)
             x, y, d = world[0]
             for w in world[1:]:
-                path = svgfig.Line(x, y, w[0], w[1], **self.line_style.attributes)
+                path = svgfig_mc.Line(x, y, w[0], w[1], **self.line_style.attributes)
                 the_map.add_to_layer(self.target, path.SVG(the_map.project_inner))
                 if 'sequential' in self.mode:
                     x, y = w[0], w[1]
 
         # Place the symbols next
-        #TODO: handle <defs> in the symbol source file to get blends right. Fairly tricky to do.
+        #TODO: handle <defs> in the symbol source file to get blends right.
         if self.symbol:
             # replace symbol names with objects and make the list of symbols as long as the list of points
             if isinstance(self.symbol, basestring):
@@ -254,7 +265,7 @@ class Place(Command):
                     txt = f.format(**strings)
                 except KeyError as ke:
                     raise MapperException(MX_UNRESOLVED_REFERENCE, 'Project.run', 'label format value', str(ke))
-                svg = svgfig.Text(x, y, txt, **self.label_style.attributes).SVG(None)
+                svg = svgfig_mc.Text(x, y, txt, **self.label_style.attributes).SVG(None)
                 the_map.add_to_layer(self.target, svg)
 
         logger.info(u'Place.run: drew {} points'.format(len(world)))
@@ -298,17 +309,17 @@ class Graticules(Command):
                     raise MapperException(MX_WRONG_VALUE, 'OneLine.initialize', 'position', self.pos)
 
         def hline(self, t):
-            return svgfig.HLine(self.s0, self.s1, t, style=self.style.style())
+            return svgfig_mc.HLine(self.s0, self.s1, t, style=self.style.style())
 
         def vline(self, t):
-            return svgfig.VLine(self.s0, self.s1, t, style=self.style.style())
+            return svgfig_mc.VLine(self.s0, self.s1, t, style=self.style.style())
 
         def get_label(self, x, y, strings):
             try:
                 txt = self.fmt.format(**strings)
             except KeyError as ke:
                 raise MapperException(MX_UNRESOLVED_REFERENCE, 'OneLine.run', 'label format value', str(ke))
-            return svgfig.SVG('text', txt, x=x, y=y, **self.l_style.attributes)
+            return svgfig_mc.SVG('text', txt, x=x, y=y, **self.l_style.attributes)
 
     def __init__(self, d):
         Command.__init__(self, d)

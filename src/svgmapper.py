@@ -3,7 +3,7 @@ __author__ = 'Marko Čibej'
 from mapper_commands import *
 from mapper_resources import *
 from mapper_helper import *
-import svgfig
+import svgfig_mc
 from math import pi
 import os
 import argparse
@@ -315,10 +315,10 @@ class SvgMapper(ResourceManager):
         if exception_type is not None:
             if isinstance(value, MapperException):
                 logger.error(value)
-#                logger.error(u'{}: {}'.format(value, traceback.print_tb(trace)))
                 return True
             else:
-                return False
+                logger.error(u'{}: {}'.format(value, traceback.print_tb(trace)))
+                return True
 
     def load_config(self, filename, add_resource=None):
         """ Build a list of dictionaries with resource definitions, then instantiate all the objects. """
@@ -363,6 +363,8 @@ class SvgMapper(ResourceManager):
                 raise MapperException(MX_UNEXPECTED_PARAMETER, 'SvgMapper.instantiate', keyword, 'main')
 
     def replace_targets(self, lst):
+        if isinstance(lst, basestring):
+            lst = [lst]
         self.run_list = lst
 
     def run(self, the_map=None):
@@ -383,8 +385,9 @@ class Map(ResourceManager):
         ResourceManager.__init__(self, parent, parent.path)
         self.commands = []
         self.layers_out = {}
-        self.input_svg = self.output_svg = None
-        self.rect_world = None
+        self.input_svg = self.output_svg = self.file_out = None
+        self.rect_in = self.rect_world = self.rect_world_rad = None
+        self.projection = self.scale_in = self.scale_out = self.mode = None
         self.dx_in = self.dy_in = self.x0_in = self.y0_in = None
         self.dx_out = self.dy_out = self.x0_out = self.y0_out = None
         try:
@@ -408,14 +411,18 @@ class Map(ResourceManager):
             if self.projection is None:
                 raise MapperException(MX_UNRESOLVED_REFERENCE, 'Map.init_output', 'projection', proj)
             # then load the input file
-            filename = os.path.join(self.path, self.d['file-in'])
-            self.input_svg = svgfig.load(filename)
-            # get the in, out and world rectangle, then initialize the projection and finally set the
-            # in and out scaling function
-            self.set_scale(self.d['scale'])
+            file_in = self.translate_string(self.d['file-in'])
+            file_in = os.path.join(self.path, file_in)
+            self.input_svg = svgfig_mc.load(file_in)
+            # define all the layers of transformation between the input and the output file.
+            self.set_transforms(self.d['viewport'])
             # and then prepare the output file
-            self.file_out = os.path.join(self.path, self.d['file-out'])
+            self.file_out = self.translate_string(self.d['file-out'])
+            self.file_out = os.path.join(self.path, self.file_out)
             self.init_output(get_or_default(self.d, 'append', False))
+            self.mode = get_or_default(self.d, 'mode', 'keep')
+            if self.mode not in {'keep', 'clip', 'crop'}:
+                raise MapperException(MX_WRONG_VALUE, 'Map.initialize', 'mode', self.mode)
         except KeyError as ke:
             raise MapperException(MX_MISSING_PARAMETER, 'Map.initialize', str(ke), 'map')
 
@@ -439,75 +446,62 @@ class Map(ResourceManager):
         s.update(self.strings)
         self.strings = s
 
-    def set_scale(self, d):
+    def set_transforms(self, d):
         """
-        Get the in, world and out rectangles and define mapping scale.
+        Set the incoming and outgoing transformations and initialize the projection
 
         Scale transformation is defined as:
             scale rect_in to rect_world. flip y coordinate while you're at it and scale from degrees to radians
             apply projection
-            scale to rect_world and flip the y coordinate again.
+            scale to output, center and flip the y coordinate again.
         Projection output size is not normalized, output scale is determined by projecting the corners of the world
         rectangle and scaling them to the output rectangle.
         """
         # Preferably, read the in_rect from the scaling object, so start by checking if one is defined
-        mtc = scaler = None
+        mtc_name = scaler = None
         if isinstance(d, basestring):
-            mtc = self.get_match(d)
+            mtc_name = d
             align = [0, 0, 1, 1]
         else:
             align = get_or_default(d, 'align', [0, 0, 1, 1])
             if 'match' in d:
-                mtc = self.get_match(d['match'])
-        if mtc:
+                mtc_name = d['match']
+        if mtc_name:
+            mtc = self.get_match(mtc_name)
             try:
                 scaler = mtc.iter(self.input_svg).next()
             except:
-                raise MapperException(MX_MISSING_SVG, 'Map.initialize', d['match'], 'input file')
+                raise MapperException(MX_MISSING_SVG, 'Map.set_transforms', mtc_name, 'input file')
 
         # Now we can get the input rectangle from one of the two sources
         if scaler:
-            rect_in = Rectangle().bounding_box_svg(scaler)
+            self.rect_in = Rectangle().bounding_box_svg(scaler)
         else:
-            rect_in = self.get_rectangle(d['rect-in'])
-        rect_in.orient(True)
+            self.rect_in = self.get_rectangle(d['rect-in'])
+        self.rect_in.orient(True)
 
-        # World rectangle is next: either read it from the scaler or from config. Then initialize the projection.
+        # World rectangle is next: either read it from the scaler or from config, then initialize the projection.
         if scaler and 'lon-min' in scaler.attr:
             self.rect_world = Rectangle(scaler)
         else:
             self.rect_world = self.get_rectangle(d['rect-world'])
         self.rect_world.orient()
+        self.rect_world_rad = Rectangle(self.rect_world).scale(pi/180)
         self.projection.initialize(self)
 
-        # Finally the output rectangle. Here, config takes preference, otherwise copy the input
-        if 'rect-out' in d:
-            rect_out = Rectangle(d['rect-out'])
-        else:
-            rect_out = Rectangle(rect_in)
-        rect_out.orient(True)
-
-        # finally, set the in and out scale. A simple linear transform, but we have to do it in radians.
-        dx_in = (self.rect_world.x1 - self.rect_world.x0)*pi/(rect_in.x1 - rect_in.x0)/180
-        dy_in = (self.rect_world.y1 - self.rect_world.y0)*pi/(rect_in.y1 - rect_in.y0)/180
-        x0_in = self.rect_world.x0*pi/180 - rect_in.x0*dx_in
-        y0_in = self.rect_world.y0*pi/180 - rect_in.y0*dy_in
+        # set the incoming linear transform
+        dx_in = (self.rect_world_rad.x1 - self.rect_world_rad.x0)/(self.rect_in.x1 - self.rect_in.x0)
+        dy_in = (self.rect_world_rad.y1 - self.rect_world_rad.y0)/(self.rect_in.y1 - self.rect_in.y0)
+        x0_in = self.rect_world_rad.x0 - self.rect_in.x0*dx_in
+        y0_in = self.rect_world_rad.y0 - self.rect_in.y0*dy_in
         self.scale_in = lambda x, y: (x*dx_in + x0_in, y*dy_in + y0_in)
 
-        xref = self.rect_world.x0*(1 - align[0]) + self.rect_world.x1*align[0]
-        yref = self.rect_world.y0*(1 - align[1]) + self.rect_world.y1*align[1]
-        x_out0 = self.projection.project(self.rect_world.x0*pi/180, yref*pi/180)[0]
-        y_out0 = self.projection.project(xref*pi/180, self.rect_world.y0*pi/180)[1]
-        xref = self.rect_world.x0*(1 - align[2]) + self.rect_world.x1*align[2]
-        yref = self.rect_world.y0*(1 - align[3]) + self.rect_world.y1*align[3]
-        x_out1 = self.projection.project(self.rect_world.x1*pi/180, yref*pi/180)[0]
-        y_out1 = self.projection.project(xref*pi/180, self.rect_world.y1*pi/180)[1]
+        # and the outgoing one
+        x_out1, y_out1 = get_or_default(d, 'center', self.rect_in.centerpoint())
+        d_out = get_or_default(d, 'scale', 2/(abs(dx_in) + abs(dy_in)))
+        x_out0, y_out0 = self.projection.project(*self.rect_world_rad.centerpoint())
+        self.scale_out = lambda x, y: (d_out*(x - x_out0) + x_out1, d_out*(y_out0 - y) + y_out1)
 
-        dx_out = (rect_out.x1 - rect_out.x0)/(x_out1 - x_out0)
-        dy_out = (rect_out.y1 - rect_out.y0)/(y_out1 - y_out0)
-        x0_out = rect_out.x0 - x_out0*dx_out
-        y0_out = rect_out.y0 - y_out0*dy_out
-        self.scale_out = lambda x, y: (x*dx_out + x0_out, y*dy_out + y0_out)
 
     def init_output(self, append):
         """
@@ -515,16 +509,16 @@ class Map(ResourceManager):
         or load an existing one and index it.
         """
         if append:
-            self.output_svg = svgfig.load(self.file_out)
+            self.output_svg = svgfig_mc.load(self.file_out)
             for k, s in self.input_svg:
-                if isinstance(s, svgfig.SVG) and s.t == 'g' and 'inkscape:groupmode' in s.attr:
+                if isinstance(s, svgfig_mc.SVG) and s.t == 'g' and 'inkscape:groupmode' in s.attr:
                     self.layers_out[s.attr['inkscape:label']] = s
         else:
             # Clone the header part of the input by iterating over all top-level members that are not groups.
-            self.output_svg = svgfig.SVG('svg')
+            self.output_svg = svgfig_mc.SVG('svg')
             self.output_svg.attr = copy.deepcopy(self.input_svg.attr)
             for k, s in self.input_svg.depth_first(1):
-                if isinstance(s, svgfig.SVG) and s.t not in ['g', 'path']:
+                if isinstance(s, svgfig_mc.SVG) and s.t not in ['g', 'path']:
                     self.output_svg.append(s.clone())
 
     def run(self):
@@ -533,13 +527,26 @@ class Map(ResourceManager):
             c.run(self)
         self.output_svg.save(self.file_out)
 
+    def clip(self, p):
+        """ Rejects paths outside the input rectangle if mode in {'clip', 'crop'} """
+        if self.mode == 'keep':
+            return False
+        if isinstance(p, svgfig_mc.SVG):
+            return self.rect_in.intersects(Rectangle().bounding_box_svg(p))
+        else:
+            return self.rect_in.intersects(p)
+
     def project_inner(self, x, y):
         """ Project from world coordinates expressed in radians to page coordinates """
+        if self.mode == 'crop':
+            x, y = self.rect_world_rad.crop(x, y)
         x, y = self.projection.project(x, y)
         return self.scale_out(x, y)
 
     def project(self, x, y):
         x, y = self.scale_in(x, y)
+        if self.mode == 'crop':
+            x, y = self.rect_world_rad.crop(x, y)
         x, y = self.projection.project(x, y)
         return self.scale_out(x, y)
 
@@ -563,7 +570,7 @@ class Map(ResourceManager):
         if name in self.layers_out:
             g = self.layers_out[name]
         else:
-            g = svgfig.SVG('g', style="display:inline", inkscape__label=name, id=name, inkscape__groupmode='layer')
+            g = svgfig_mc.SVG('g', style="display:inline", inkscape__label=name, id=name, inkscape__groupmode='layer')
             self.output_svg.append(g)
             self.layers_out[name] = g
         return g
@@ -575,20 +582,32 @@ class Map(ResourceManager):
         return g
 
 
-if __name__ == '__main__':
+def main(config, resources=None, maps=None, simulate=False):
+    logger.info('Starting job')
+    with SvgMapper() as mapper:
+        mapper.load_config(config, resources)
+        if maps:
+            mapper.replace_targets(maps)
+        if not simulate:
+            mapper.run()
+    logger.info('Finished')
+
+
+def parse_args():
     parser = argparse.ArgumentParser(description='Transform maps in SVG format in various ways.')
-    parser.add_argument('config_file', help='The name of the json file which specifies the configuration')
+    parser.add_argument('config_file', help='The name of the configuration file')
     parser.add_argument('-r', '--resource', help='Additional resource file(s)',
                         action='append', metavar='resource_file')
-    maps = parser.add_mutually_exclusive_group()
-    maps.add_argument('-m', '--map', help='Map(s) to run instead of those listed in config file', metavar='map_name')
-    maps.add_argument('-v', '--verbosity', help='Set verbosity: 0=errors only, 1=warnings, 2=info, 3=debug',
-                      type=int, choices=range(0, 3), dest='verbosity')
+    parser.add_argument('-m', '--map', help='Map(s) to run instead of those listed in config file', metavar='map_name')
+    parser.add_argument('-v', '--verbosity', help='Set verbosity: 0=errors only, 1=warnings, 2=info, 3=debug',
+                        type=int, choices=range(0, 3), dest='verbosity')
     parser.add_argument('-l', '--log', help='Output to named log file', metavar=('level(0-3)', 'logFile'), nargs=2)
     parser.add_argument('-s', '--simulate', help='Don\'t actually do anything, just parse all the configurations',
                         action='store_true')
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def set_logging(args):
     log_levels = [logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
     logger.setLevel(logging.DEBUG)
     if args.log:
@@ -604,13 +623,9 @@ if __name__ == '__main__':
         lc.setLevel(log_levels[2])
     logger.addHandler(lc)
 
-    logger.info('Starting job')
-    with SvgMapper() as mapper:
-        mapper.load_config(args.config_file, add_resource=args.resource)
-        if args.map:
-            mapper.replace_targets(args.map)
-        if not args.simulate:
-            mapper.run()
-    logger.info('Finished')
+if __name__ == '__main__':
+    a = parse_args()
+    set_logging(a)
+    main(a.config_file, a.resource, a.map, a.simulate)
 else:
     logger = logging.getLogger('SvgMapper')

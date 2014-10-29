@@ -17,10 +17,21 @@
 # 
 # Full licence is in the file COPYING and at http://www.gnu.org/copyleft/gpl.html
 
-# Modifications by Marko Čibej in 2014:
+#----------------------------------------------------------------------------------------
+# This is the modified svgfig.py for use in svgMapper. If you need to use svgfig as such,
+# you should get it from Jim Pivarski's github site, and you should probably consider
+# using a version from 2.x branch, rather than 1.x.
+#
+# The following modifications have been made by Marko Čibej. All can be found by searching for #FIXED MČ:
 #   Encoding set to utf-8
+#   Changed indent levels for readability
 #   Corrected two errors in path parsing algorithm
 #   Modified the Text class to accept unicode strings
+#   Changed a call in the Ticks class to avoid an unresolved reference. Not tested!
+#   Renamed the file from svgfig to svgfig_mc so that it won't conflict with
+#       Jim's original program, if it's present in the same environment.
+#   Fixed the handling of multi-segment paths with relative positioning of segments after the first one
+#
 
 import re, codecs, os, platform, copy, itertools, math, cmath, random, sys
 
@@ -1391,7 +1402,9 @@ class Path:
 
             ######################
             if command in ("Z", "z"):
-                x, y, X, Y = None, None, None, None
+#                x, y, X, Y = None, None, None, None
+                # FIXED MČ: resetting the running coordinates x and y causes subsequent segments of a multi-segment
+                # path to be treated as absolutely positioned even when they are relative.
                 output.append("Z")
 
             ######################
@@ -2955,7 +2968,8 @@ class Ticks:
 
         Normally only used internally.
         """
-        if len(original_ticks) < 2: original_ticks = ticks(self.low, self.high)
+        #FIXED MČ: changed ticks(self.low, self.high) to Ticks(self.low, self.high)
+        if len(original_ticks) < 2: original_ticks = Ticks(self.low, self.high)
         original_ticks = original_ticks.keys()
         original_ticks.sort()
 

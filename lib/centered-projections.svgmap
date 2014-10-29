@@ -48,3 +48,7 @@
     class : PlateCarree
     center-x : true
     center-y : true
+- projection :
+    name : Robinson-C
+    class : Robinson
+    center-x : true

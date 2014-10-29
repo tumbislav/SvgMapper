@@ -3,7 +3,7 @@ __author__ = 'Marko Čibej'
 import copy
 from mapper_helper import *
 from projections import *
-import svgfig
+import svgfig_mc
 import re
 from math import pi
 import os
@@ -96,9 +96,9 @@ class Library(Resource):
     def load_symbol(self, name):
         """ Locates and returns the symbol's svg. """
         if self.svg is None:
-            self.svg = svgfig.load(os.path.join(self.path, self.filename))
+            self.svg = svgfig_mc.load(os.path.join(self.path, self.filename))
         for k, s in self.svg:
-            if isinstance(s, svgfig.SVG):
+            if isinstance(s, svgfig_mc.SVG):
                 if 'id' in s.attr and name == s.attr['id']:
                     return s
         return None
@@ -134,7 +134,7 @@ class Symbol(Resource):
                 self.id = d['id']
             except KeyError as ke:
                 raise MapperException(MX_MISSING_PARAMETER, 'Symbol.__init__', str(ke), 'symbol')
-        elif isinstance(d, svgfig.SVG):
+        elif isinstance(d, svgfig_mc.SVG):
             self.svg = d
         logger.info(u'Loaded symbol {}'.format(self))
 
@@ -169,7 +169,7 @@ class Rectangle(Resource):
             self.__init_anonymous(d)
         elif isinstance(d, Rectangle):
             self.__init_copy(d)
-        elif isinstance(d, svgfig.SVG):
+        elif isinstance(d, svgfig_mc.SVG):
             self.__init_svg(d)
         elif d is None:
             self.name = None
@@ -220,7 +220,7 @@ class Rectangle(Resource):
 
     def bounding_box_svg(self, s):
         """ Measure an svg path and set the rectangle to the bounding box """
-        p = svgfig.pathtoPath(s)
+        p = svgfig_mc.pathtoPath(s)
         self.x0, self.y0, self.x1, self.y1 = path_bounding_box(p)
         return self
 
@@ -232,6 +232,37 @@ class Rectangle(Resource):
         else:
             self.y0, self.y1 = min(self.y1, self.y0), max(self.y1, self.y0)
         return self
+
+    def rect(self):
+        return self.x0, self.y0, self.x1, self.y1
+
+    def intersects(self, r):
+        """
+        Determines if the input intersects our rectangle. The input can be a rectangle, or a coordinate pair.
+        No orientation is assumed.
+        """
+        if isinstance(r, Rectangle):
+            return min(r.x0, r.x1) > max(self.x0, self.x1) or max(r.x0, r.x1) < min(self.x0, self.x1) or \
+                min(r.y0, r.y1) > max(self.y0, self.y1) or max(r.y0, r.y1) < min(self.y0, self.y1)
+        else:
+            return min(self.x0, self.x1) <= r[0] <= max(self.x0, self.x1) and \
+                min(self.y0, self.y1) <= r[1] <= max(self.y0, self.y1)
+
+    def scale(self, s):
+        self.x0 *= s
+        self.y0 *= s
+        self.x1 *= s
+        self.y1 *= s
+        return self
+
+    def crop(self, x, y):
+        return min(max(x, self.x0), self.x1), min(max(y, self.y0), self.y1)
+
+    def centerpoint(self):
+        return (self.x0 + self.x1)/2, (self.y0 + self.y1)/2
+
+    def array(self):
+        return [self.x0, self.y0, self.x1, self.y1]
 
 
 class Unit(Resource):
@@ -289,7 +320,7 @@ class Projection(Resource):
     with a different world rectangle and use it without issues.
 
     A projection is constructed from:
-    {'name': name, 'class': projection_class, 'center-x', ...}
+    {'name': name, 'class': projection_class, ...}
 
     The remaining parameters are optional:
             'central-meridian':
@@ -299,7 +330,6 @@ class Projection(Resource):
             'standard-parallel1':
             'standard-parallel2':
     """
-    #TODO: handle optional arguments as kwargs to projection classes
     def __init__(self, d):
         Resource.__init__(self)
         try:
@@ -309,56 +339,73 @@ class Projection(Resource):
             self.projection = None
         except KeyError as ke:
             raise MapperException(MX_MISSING_PARAMETER, 'Projection.__init__', str(ke), self.name or 'projection')
-        self.x_ref = get_or_default(d, 'central-meridian', None, True)
-        self.y_ref = get_or_default(d, 'reference-parallel', None, True)
-        self.y_0 = get_or_default(d, 'standard-parallel-1', None, True)
-        self.y_1 = get_or_default(d, 'standard-parallel-2', None, True)
-        self.y_0 = get_or_default(d, 'standard-meridian-1', None, True)
-        self.x_1 = get_or_default(d, 'standard-meridian-2', None, True)
         self.d = d
+        self.align = self.rotate = None
         logger.info(u'Loaded projection {}'.format(self))
 
     def initialize(self, the_map):
-        """ Figure out a sensible parametrization for the projection, using the data that is given and guessing
-        that which is not.
-
-        If central meridian is given, use it
-            else, if center-x is specified, set central meridian to world rectangle midpoint
-            else, set central meridian to 0
-        if projection requires a central parallel, do the same
-        if two reference parallels are needed
-            if they are given, use them
-            if only one is given, set both to that
-            else, set them to bottom and top of world rectangle
-        if one reference parallel is needed
-            if given, use it
-            else if a central parallel is given, use that
-            else set it to the centre of the world rectangle
-        :param the_map: The the_map that is using the projection
         """
-        try:
-            if self.x_ref is None or (isinstance(self.x_ref, basestring) and self.x_ref == 'center'):
-                    self.x_ref = (the_map.rect_world.x0 + the_map.rect_world.x1)*pi/360
+        Figure out a sensible parametrization for the projection. Explicitly given parameters take precedence followed
+        by defaults calculated from the world rectangle. See help for details.
+        """
+        x_central = get_or_default(self.d, 'central-meridian', 0.0)
+        if isinstance(x_central, basestring):
+            if x_central == 'center':
+                x_central = (the_map.rect_world_rad.x0 + the_map.rect_world_rad.x1)/2
             else:
-                self.x_ref *= pi/180
-            if self.y_ref is None or (isinstance(self.y_ref, basestring) and self.y_ref == 'center'):
-                    self.y_ref = (the_map.rect_world.y0 + the_map.rect_world.y1)*pi/360
-            else:
-                self.y_ref *= pi/180
-            self.y_0 = (self.y_0 if self.y_0 else the_map.rect_world.y0)*pi/180
-            self.y_1 = (self.y_1 if self.y_1 else the_map.rect_world.y1)*pi/180
-            self.x_0 = (self.x_0 if self.x_0 else the_map.rect_world.x0)*pi/180
-            self.x_1 = (self.x_1 if self.x_1 else the_map.rect_world.x1)*pi/180
-        except ValueError as ve:
-            raise MapperException(MX_WRONG_VALUE, 'Projection.initialize',None, ve.message)
+                raise MapperException(MX_WRONG_VALUE, 'Projection.initialize', 'central-meridian', x_central)
+        else:
+            x_central *= pi/180
 
-        self.projection = create_projection(self.cls, self.x_ref, self.y_ref,
-                                            self.x_0, self.x_1, self.y_0, self.y_1, self.d)
+        y_ref = get_or_default(self.d, 'reference-parallel', 0.0)
+        if isinstance(y_ref, basestring):
+            if y_ref == 'center':
+                y_ref = (the_map.rect_world_rad.x0 + the_map.rect_world_rad.x1)/2
+            else:
+                raise MapperException(MX_WRONG_VALUE, 'Projection.initialize', 'reference-parallel', y_ref)
+        else:
+            y_ref *= pi/180
+                
+        y_0 = get_or_default(self.d, 'standard-parallel-1', the_map.rect_world_rad.y0)
+        y_1 = get_or_default(self.d, 'standard-parallel-2', the_map.rect_world_rad.y1)
+
+        self.projection = create_projection(self.cls, y_ref, y_0, y_1, self.d)
+
+        aspect = get_or_default(self.d, 'aspect', None)
+        if isinstance(aspect, basestring):
+            if aspect == 'transverse':
+                x_pole, y_pole = [0, 0]
+            else:
+                raise MapperException(MX_WRONG_VALUE, 'Projection.initialize', 'aspect', aspect)
+        elif aspect:
+            try:
+                x_pole = aspect[0]*pi/180
+                y_pole = aspect[1]*pi/180
+            except:
+                raise MapperException(MX_WRONG_VALUE, 'Projection.initialize', 'aspect', aspect)
+        if aspect:
+            self.align = lambda x, y: oblique(x - x_central, y, x_pole, y_pole)
+        else:
+            self.align = lambda x, y: (x - x_central, y)
+
+        angle = get_or_default(self.d, 'rotate', None)
+        if angle is not None:
+            angle *= pi/180
+            s = sin(angle)
+            c = cos(angle)
+            self.rotate = lambda x, y: (c*x + -s*y, s*x + c*y)
+        else:
+            self.rotate = None
+
         return self
 
     def project(self, x, y):
-        return self.projection.project(x, y)
+        x, y = self.align(x, y)
 
+        x, y = self.projection.project(x, y)
+        if self.rotate:
+            x, y = self.rotate(x, y)
+        return x, y
 
 class Match(Resource):
     """
@@ -366,7 +413,7 @@ class Match(Resource):
     SVG objects from the source file.
 
     A dictionary of the following form builds a named Match
-    {'name': name, 'rule':{'layer': layer_path, 'pattern':{...}, 'svg-type': type}}
+    {'name': name, 'layer': layer_path, 'pattern':{...}, 'svg-type': type}
 
     If only the inner dictionary is present, an anonymous match is created.
 
@@ -386,14 +433,14 @@ class Match(Resource):
             self.svg_type = 'path'
         elif isinstance(d, dict):
             self.name = get_or_default(d, 'name', None)
-            if 'rule' in d:
-                dd = d['rule']
+            if 'layer' in d:
+                self.layer = d['layer'].split('::')
+            self.svg_type = get_or_default(d, 'svg-type', 'path')
+            pt = get_or_default(d, 'pattern', {})
+            if isinstance(pt, basestring):
+                self.pattern = {'id': pt}
             else:
-                dd = d
-            if 'layer' in dd:
-                self.layer = dd['layer'].split('::')
-            self.svg_type = get_or_default(dd, 'svg-type', 'path')
-            self.pattern = get_or_default(dd, 'pattern', {})
+                self.pattern = pt
         logger.info(u'Loaded match `{}`'.format(self))
 
     def set_svg_type(self, t):
@@ -418,7 +465,7 @@ class Match(Resource):
         except StopIteration:
             return begin
         for k, s in begin:
-            if isinstance(s, svgfig.SVG) and s.t == 'g' and 'inkscape:groupmode' in s.attr:
+            if isinstance(s, svgfig_mc.SVG) and s.t == 'g' and 'inkscape:groupmode' in s.attr:
                 if s.attr['inkscape:label'] == layer:
                     return self.locate_layer(s, layer_iterator)
         return None

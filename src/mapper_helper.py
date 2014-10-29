@@ -1,7 +1,7 @@
 # encoding: utf-8
 __author__ = 'Marko Čibej'
 
-import svgfig
+import svgfig_mc
 import logging
 from itertools import chain
 
@@ -51,7 +51,7 @@ class MatchIterator:
         return self
 
     def next(self):
-        if not isinstance(self.svg, svgfig.SVG):
+        if not isinstance(self.svg, svgfig_mc.SVG):
             raise StopIteration
 
         self.matched = self.match(self.svg)
@@ -81,18 +81,18 @@ def matched_only(svg, matcher):
 def svg_center(svg):
     """ Find and return the center of a svg path or group. Only path elements are considered. """
     if svg.t == 'path':
-        bounding_box = path_bounding_box(svgfig.pathtoPath(svg))
+        bounding_box = path_bounding_box(svgfig_mc.pathtoPath(svg))
     else:
         bounding_box = None
         for i, p in svg:
-            if isinstance(p, svgfig.SVG) and p.t == 'path':
-                bounding_box = path_bounding_box(svgfig.pathtoPath(p), start_from=bounding_box)
+            if isinstance(p, svgfig_mc.SVG) and p.t == 'path':
+                bounding_box = path_bounding_box(svgfig_mc.pathtoPath(p), start_from=bounding_box)
     return (bounding_box[0] + bounding_box[2])/2, (bounding_box[1] + bounding_box[3])/2
 
 
 def svg_transform(svg, x0, y0, x1, y1, xs=1.0, ys=1.0):
     """ Wrap an svg element in a group and apply a transformation, mapping x0,y0 to x1, y1 and scaling xs and ys."""
-    return svgfig.SVG('g', svg, transform='matrix({:f},0,0,{:f},{:f},{:f})'.format(xs, ys, x1 - xs*x0, y1 - ys*y0))
+    return svgfig_mc.SVG('g', svg, transform='matrix({:f},0,0,{:f},{:f},{:f})'.format(xs, ys, x1 - xs*x0, y1 - ys*y0))
 
 
 def svg_get_matrix(trans):
@@ -192,7 +192,7 @@ class MapperException(Exception):
         if self.reason == MX_UNEXPECTED:
             return u'{}: this should not happen: {} {}'.format(self.raised, self.name, self.value)
         elif self.reason == MX_CONFIG_ERROR:
-            return u'{}: config file error "{}" {} '.format(self.raised, self.name, self.value)
+            return u'{}: config error "{}" {} '.format(self.raised, self.name, self.value)
         elif self.reason == MX_UNRESOLVED_REFERENCE:
             return u'{}: cannot find {} named {}'.format(self.raised, self.name, self.value)
         elif self.reason == MX_UNEXPECTED_PARAMETER:
