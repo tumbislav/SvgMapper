@@ -130,8 +130,11 @@ class ResourceManager():
                     # Skip anonymous and unlisted statements if we have a filter
                     if not 'name' in definition or not definition['name'] in the_filter:
                         continue
-                    # Rename those that pass the filter
-                    definition['name'] = the_filter[definition['name']]
+                    # Rename those that pass the filter, provided an alias is given
+                    alias = the_filter[definition['name']]
+                    # * means keep the same name
+                    if alias != '*':
+                        definition['name'] = alias
                 if isinstance(definition, dict):
                     # Tag the objects with local path if they need it
                     definition['path'] = localpath
