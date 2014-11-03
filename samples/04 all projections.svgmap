@@ -1,0 +1,199 @@
+# Takes the map of Iceland and creates samples of all projections
+- import: ../lib/defaults
+- import:
+    from: 04-1 resources
+    elements:
+        rect-source: source
+        # this is just to align the input and output sea sizes
+        rect-dummy-world: dummy
+        rect-full-world: world
+        line-graticules: _
+        style-landmass: _
+        style-label: _
+
+- run:
+    - init
+    - aitoff
+    - albers
+    - bonne
+    - bottomley
+    - cassini
+    - plate-carree
+#    - equidistant-conic
+#    - gnomonic
+#    - hammer
+#    - kavrayskiy-vii
+#    - mercator
+#    - mollweide
+#    - robinson
+#    - sinusoidal
+#    - winkel-tripel
+
+- map: 
+    name: init
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    viewport:
+        rect-in: source
+        rect-world: dummy
+    do:
+        - import:
+            from: 04-1 resources
+            elements: 
+                project-sea: _
+
+- map:
+    name: aitoff
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    append: true
+    projection: Aitoff
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [90, 50]
+        scale: 20
+    do:
+        - import:
+            from: 04-1 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: Aitoff
+                style: style-label
+
+- map:
+    name: albers
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    append: true
+    projection: Albers
+    viewport:
+        rect-in: source
+        rect-world: [-180, -20, 180, 89.9]
+        center: [230, 50]
+        scale: 20
+    do:
+        - import:
+            from: 04-1 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 30]
+            label:
+                format: Albers
+                style: style-label
+
+- map:
+    name: bonne
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    append: true
+    projection:
+        class: Bonne
+        reference-parallel: 30
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [370, 50]
+        scale: 20
+    do:
+        - import:
+            from: 04-1 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: Bonne
+                style: style-label
+
+- map:
+    name: bottomley
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    append: true
+    projection:
+        class: Bottomley
+        reference-parallel: 30
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [510, 50]
+        scale: 20
+    do:
+        - import:
+            from: 04-1 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: Bottomley
+                style: style-label
+
+- map:
+    name: cassini
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    append: true
+    projection:
+        class: Cassini
+        rotate: -90
+    viewport:
+        rect-in: source
+        rect-world: [-100, -60, 100, 60]
+        center: [650, 50]
+        scale: 20
+    do:
+        - import:
+            from: 04-1 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: Cassini
+                style: style-label
+
+- map:
+    name: plate-carree
+    file-in: Iceland simplified.svg
+    file-out: Projections.svg
+    append: true
+    projection: Cylindrical
+    viewport:
+        rect-in: source
+        rect-world:  world
+        center: [90, 150]
+        scale: 20
+    do:
+        - import:
+            from: 04-1 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: Plate Carree
+                style: style-label

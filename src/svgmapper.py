@@ -18,7 +18,7 @@ class ResourceManager():
     """
 
     top_statements = {'import', 'run', 'map'}
-    resource_statements = {'style', 'match', 'projection', 'unit', 'strings', 'library'}
+    resource_statements = {'style', 'match', 'projection', 'unit', 'strings', 'library', 'rectangle'}
     command_statements = {'project', 'place', 'graticules'}
     all_statements = top_statements | resource_statements | command_statements
 
@@ -132,8 +132,8 @@ class ResourceManager():
                         continue
                     # Rename those that pass the filter, provided an alias is given
                     alias = the_filter[definition['name']]
-                    # * means keep the same name
-                    if alias != '*':
+                    # a single underscore means keep the name
+                    if alias != '_':
                         definition['name'] = alias
                 if isinstance(definition, dict):
                     # Tag the objects with local path if they need it
@@ -511,9 +511,9 @@ class Map(ResourceManager):
         Either create a new blank output file that is a copy of the input stripped of content,
         or load an existing one and index it.
         """
-        if append:
+        if append and os.path.isfile(self.file_out):
             self.output_svg = svgfig_mc.load(self.file_out)
-            for k, s in self.input_svg:
+            for k, s in self.output_svg:
                 if isinstance(s, svgfig_mc.SVG) and s.t == 'g' and 'inkscape:groupmode' in s.attr:
                     self.layers_out[s.attr['inkscape:label']] = s
         else:
@@ -610,25 +610,23 @@ def parse_args():
     return parser.parse_args()
 
 
-def set_logging(args):
+def set_logging(the_log, verbosity):
     log_levels = [logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
     logger.setLevel(logging.DEBUG)
-    if args.log:
-        level = log_levels[int(args.log[0])]
-        lf = logging.FileHandler(args.log[1], mode='w')
+    if the_log:
+        level = log_levels[int(the_log[0])]
+        lf = logging.FileHandler(the_log[1], mode='w')
         lf.setLevel(level)
         lf.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
         logger.addHandler(lf)
     lc = logging.StreamHandler()
-    if args.verbosity:
-        lc.setLevel(log_levels[args.verbosity])
+    if verbosity:
+        lc.setLevel(log_levels[verbosity])
     else:
         lc.setLevel(log_levels[2])
     logger.addHandler(lc)
 
 if __name__ == '__main__':
     a = parse_args()
-    set_logging(a)
+    set_logging(a.log, a.verbosity)
     main(a.config_file, a.resource, a.map, a.simulate)
-else:
-    logger = logging.getLogger('SvgMapper')

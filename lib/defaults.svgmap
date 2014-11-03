@@ -27,10 +27,11 @@
 
 # Translation strings
 - strings : 
-    # The default projection is the identity. Not very useful,
+    # The default projection is the Cylindrical, which itself
+    # defaults to PlateCarree, i.e. identity. Not very useful,
     #  but you can take several maps, scale them and arrange
     #  them on an output page without re-projection
-    default-projection  : PlateCarree
+    default-projection : Cylindrical
     # A format that produces labels like 24°37'52"E
     #  It includes non-ascii characters and braces, 
     #  so it must be quoted

@@ -1,0 +1,43 @@
+# SvgMapper test suite
+# Unit test 03: copy and apply styles
+
+- run : this-is-incomplete
+
+- match:
+    name    : the-scale
+    layer   : scale
+    pattern :
+        id  : scale-equator
+
+- match:
+    name    : island
+    layer   : island
+    
+- match:
+    name    : water
+    layer   : water
+        
+- match:
+    name    : town
+    layer   : town
+        
+- map : 
+    name        : t01-copy
+    file-in     : island.svg
+    file-out    : t01-result.svg
+    overwrite   : true
+    scale       : the-scale
+    projection  : PlateCarree
+    do :
+      - project : 
+            what    : [ paths, texts ]
+            match   : island
+            target  : island
+      - project : 
+            what    : [ paths, texts ]
+            match   : water
+            target  : water
+      - project : 
+            what    : [ texts, marks ]
+            match   : town
+            target  : town
