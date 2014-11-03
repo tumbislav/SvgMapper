@@ -369,7 +369,12 @@ class Projection(Resource):
         y_0 = get_or_default(self.d, 'standard-parallel-1', the_map.rect_world_rad.y0)
         y_1 = get_or_default(self.d, 'standard-parallel-2', the_map.rect_world_rad.y1)
 
-        self.projection = create_projection(self.cls, y_ref, y_0, y_1, self.d)
+        if self.cls in projection_classes:
+            logger.info('Creating projection class `{}`'.format(self.cls))
+            cls = projection_classes[self.cls]
+            self.projection =  cls(y_ref, y_0, y_1, self.d)
+        else:
+            logger.error('Projection class `{}` is not known'.format(self.cls))
 
         aspect = get_or_default(self.d, 'aspect', None)
         if isinstance(aspect, basestring):

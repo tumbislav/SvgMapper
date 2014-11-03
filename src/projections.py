@@ -39,7 +39,7 @@ def oblique(x, y, x_p, y_p):
 
 
 class Aitoff:
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         pass
 
     def project(self, x, y):
@@ -48,7 +48,7 @@ class Aitoff:
 
 
 class Albers:
-    def __init__(self, y_ref, y_0, y_1):
+    def __init__(self, y_ref, y_0, y_1, d):
         self.n = (sin(y_0) + sin(y_1))/2
         self.c = cos(y_0)**2 + 2 * self.n * sin(y_0)
         self.r0 = sqrt(self.c - 2 * self.n * sin(y_ref))/self.n
@@ -60,7 +60,7 @@ class Albers:
 
 
 class Bonne:
-    def __init__(self, y_ref):
+    def __init__(self, y_ref, y_0, y_1, d):
         self.y1 = y_ref
         self.coty = 1/tan(y_ref)
 
@@ -71,7 +71,7 @@ class Bonne:
 
 
 class Bottomley:
-    def __init__(self, y_ref):
+    def __init__(self, y_ref, y_0, y_1, d):
         self.sy_ref = sin(y_ref)
 
     def project(self, x, y):
@@ -84,7 +84,7 @@ class Bottomley:
 
 
 class Cassini:
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         pass
 
     def project(self, x, y):
@@ -93,7 +93,7 @@ class Cassini:
 
 
 class Cylindrical:
-    def __init__(self, y_ref, d):
+    def __init__(self, y_ref, y_0, y_1, d):
         self.y_ref = y_ref
         variant = get_or_default(d, 'variant', 'PlateCarree')
         if variant == 'Lambert':
@@ -110,9 +110,9 @@ class Cylindrical:
 
 
 class EquidistantConic:
-    def __init__(self, y_ref, y1, y2):
-        self.n = (sin(y1) + sin(y2))/2
-        self.c = cos(y1)**2 + 2 * self.n * sin(y1)
+    def __init__(self, y_ref, y_0, y_1, d):
+        self.n = (sin(y_0) + sin(y_1))/2
+        self.c = cos(y_0)**2 + 2 * self.n * sin(y_0)
         self.r0 = sqrt(self.c - 2 * self.n * sin(y_ref))/self.n
 
     def project(self, x, y):
@@ -122,7 +122,7 @@ class EquidistantConic:
 
 
 class Sinusoidal:
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         pass
 
     def project(self, x, y):
@@ -130,7 +130,7 @@ class Sinusoidal:
 
 
 class Gnomonic:
-    def __init__(self, y_ref):
+    def __init__(self, y_ref, y_0, y_1, d):
         self.sy = sin(y_ref)
         self.cy = cos(y_ref)
 
@@ -140,7 +140,7 @@ class Gnomonic:
 
 
 class Hammer:
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         pass
 
     def project(self, x, y):
@@ -149,7 +149,7 @@ class Hammer:
 
 
 class KavrayskiyVII:
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         pass
 
     def project(self, x, y):
@@ -157,7 +157,7 @@ class KavrayskiyVII:
 
 
 class Mercator:
-    def __init__(self, d):
+    def __init__(self, y_ref, y_0, y_1, d):
         if 'oblique' in d:
             self.x_pole, self.y_pole = d['oblique']
             self.project = self.oblique
@@ -185,7 +185,7 @@ class Mercator:
 
 
 class Mollweide:
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         pass
 
     def theta(self, y):
@@ -217,7 +217,7 @@ class Robinson:
           0.9599310885968813, 1.0471975511965976, 1.1344640137963142, 1.2217304763960306, 1.3089969389957472,
           1.3962634015954636, 1.4835298641951802, 1.57079632679]
 
-    def __init__(self):
+    def __init__(self, y_ref, y_0, y_1, d):
         if interp1d:
             self.interpolate = self.interpolate_quadratic
             self.inter_a = interp1d(self._y, self._a, 'quadratic', copy=False, assume_sorted=True)
@@ -245,7 +245,7 @@ class Robinson:
 
 
 class WinkelTripel:
-    def __init__(self, y_ref):
+    def __init__(self, y_ref, y_0, y_1, d):
         self.y_ref = y_ref
 
     def project(self, x, y):
@@ -253,37 +253,18 @@ class WinkelTripel:
         return (x*cos(self.y_ref) + 2*cos(y)*sin(x/2)*a)/2, (y + sin(y)*a)/2
 
 
-def create_projection(name, y_ref, y_0, y_1, d):
-    logger.info('Creating `{}` with {}'.format(name, d))
-    if name == 'Aitoff':
-        return Aitoff()
-    elif name == 'Albers':
-        return Albers(y_ref, y_0, y_1)
-    elif name == 'Bonne':
-        return Bonne(y_ref)
-    elif name == 'Bottomley':
-        return Bottomley(y_ref)
-    elif name == 'Cassini':
-        return Cassini()
-    elif name == 'Cylindrical':
-        return Cylindrical(y_ref, d)
-    elif name == 'Equidistant-Conic':
-        return EquidistantConic(y_ref, y_0, y_1)
-    elif name == 'Gnomonic':
-        return Gnomonic(y_ref)
-    elif name == 'Hammer':
-        return Hammer()
-    elif name == 'Kavrayskiy-VII':
-        return KavrayskiyVII()
-    elif name == 'Mercator':
-        return Mercator(d)
-    elif name == 'Mollweide':
-        return Mollweide()
-    elif name == 'Robinson':
-        return Robinson()
-    elif name == 'Sinusoidal':
-        return Sinusoidal()
-    elif name == 'Winkel-Tripel':
-        return WinkelTripel(y_ref)
-    else:
-        logger.error('Projection `{}` is not known'.format(name))
+projection_classes = {'Aitoff': Aitoff,
+    'Albers': Albers,
+    'Bonne': Bonne,
+    'Bottomley': Bottomley,
+    'Cassini': Cassini,
+    'Cylindrical': Cylindrical,
+    'Equidistant-Conic': EquidistantConic,
+    'Gnomonic': Gnomonic,
+    'Hammer': Hammer,
+    'Kavrayskiy-VII': KavrayskiyVII,
+    'Mercator': Mercator,
+    'Mollweide': Mollweide,
+    'Robinson': Robinson,
+    'Sinusoidal': Sinusoidal,
+    'Winkel-Tripel': WinkelTripel}
