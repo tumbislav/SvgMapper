@@ -23,7 +23,8 @@
     - gnomonic
     - hammer
     - kavrayskiy-vii
-#    - mercator
+    - mercator
+    - mercator-transverse
 #    - mollweide
 #    - robinson
 #    - sinusoidal
@@ -65,7 +66,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Aitoff
+                format: projection-class
                 style: style-label
 
 - map:
@@ -94,7 +95,7 @@
             target: labels
             at: [-60, 30]
             label:
-                format: Albers
+                format: projection-class
                 style: style-label
 
 
@@ -122,7 +123,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Bonne
+                format: projection-class
                 style: style-label
 
 - map:
@@ -149,7 +150,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Bottomley
+                format: projection-class
                 style: style-label
 
 - map:
@@ -161,8 +162,8 @@
         class: Cassini
         rotate: -90
     viewport:
-        rect-in: source
-        rect-world: [-100, -60, 100, 60]
+        rect-in: [-500, -200, 1000, 1000]
+        rect-world: world
         center: [650, 50]
         scale: 20
     do:
@@ -176,7 +177,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Cassini
+                format: projection-class
                 style: style-label
 
 - map:
@@ -201,7 +202,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Plate Carree
+                format: projection-class
                 style: style-label
 
 - map:
@@ -209,10 +210,14 @@
     file-in: Iceland.svg
     file-out: Projections.svg
     append: true
-    projection: Equidistant-Conic
+    projection:
+        class: Equidistant-Conic
+        standard-parallel-1: 40
+        standard-parallel-2: 90
+        reference-parallel: 0
     viewport:
         rect-in: source
-        rect-world: [-180, -30, 180, 90]
+        rect-world: world
         center: [230, 150]
         scale: 20
     do:
@@ -226,7 +231,7 @@
             target: labels
             at: [-60, 30]
             label:
-                format: Equidistant Conic
+                format: projection-class
                 style: style-label
 
 - map:
@@ -251,7 +256,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Gnomonic
+                format: projection-class
                 style: style-label
 
 - map:
@@ -276,7 +281,7 @@
             target: labels
             at: [-60, 0]
             label:
-                format: Hammer
+                format: projection-class
                 style: style-label
 
 - map:
@@ -302,4 +307,59 @@
             at: [-60, 0]
             label:
                 format: Каврайский VII
+                style: style-label
+
+- map:
+    name: mercator
+    file-in: Iceland.svg
+    file-out: Projections.svg
+    append: true
+    projection:
+        class: Mercator
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [90, 250]
+        scale: 20
+    do:
+        - import:
+            from: 00 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: projection-class
+                style: style-label
+
+- map:
+    name: mercator-transverse
+    file-in: Iceland.svg
+    file-out: Projections.svg
+    append: true
+    projection:
+        class: Mercator
+        transverse: true
+        cutoff: 50
+        rotate: 90
+    viewport:
+        rect-in: [-500, -200, 1000, 1000]
+        rect-world: world
+        center: [250, 250]
+        scale: 20
+    do:
+        - import:
+            from: 00 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-0, 50]
+            label:
+                format: Mercator Transverse
                 style: style-label

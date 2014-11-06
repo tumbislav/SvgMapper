@@ -1,18 +1,18 @@
-- import : centered-projections
-- import : units
-- import : 
-    from : basic-styles
-    elements : 
-        text-plain-6        : major-labels
-        text-gray-5         : minor-labels
-        text-plain-9        : line-label
-        text-red-bold-12    : strong-red
-        line-blue-green     : river
-        line-gray-thin      : major-graticules
-        line-gray-thin-dashed : minor-graticules
-        line-red-thick      : red-thick
-- import :
-    from : symbols\map_symbols
+- import: projections
+- import: units
+- import: 
+    from: basic-styles
+    elements: 
+        text-plain-6: major-labels
+        text-gray-5: minor-labels
+        text-plain-9: line-label
+        text-red-bold-12: strong-red
+        line-blue-green: river
+        line-gray-thin: major-graticules
+        line-gray-thin-dashed: minor-graticules
+        line-red-thick: red-thick
+- import:
+    from: symbols\map_symbols
     elements:
-        windrose-grayscale  : windrose
-- import : strings
+        windrose-grayscale: windrose
+- import: strings

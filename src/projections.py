@@ -95,10 +95,10 @@ class Cassini:
 class Cylindrical:
     def __init__(self, y_ref, y_0, y_1, d):
         self.y_ref = y_ref
-        variant = get_or_default(d, 'variant', 'PlateCarree')
+        variant = get_or_default(d, 'variant', 'Plate-Carree')
         if variant == 'Lambert':
             self.fy = lambda y: sin(y)
-        elif variant == 'PlateCarree':
+        elif variant == 'Plate-Carree':
             self.fy = lambda y: y
         elif variant == 'Central':
             self.fy = lambda y: tan(y)
@@ -119,14 +119,6 @@ class EquidistantConic:
         r = sqrt(self.c - 2*self.n*sin(y))/self.n
         t = self.n*x
         return r*sin(t), self.r0 - r*cos(t)
-
-
-class Sinusoidal:
-    def __init__(self, y_ref, y_0, y_1, d):
-        pass
-
-    def project(self, x, y):
-        return x*cos(y), y
 
 
 class Gnomonic:
@@ -242,6 +234,14 @@ class Robinson:
         To avoid rounding errors around y=pi/2, clip the latitude. """
         f_a, f_b = self.interpolate(min(abs(y), 1.57079632679))
         return x*f_a, copysign(f_b, y)
+
+
+class Sinusoidal:
+    def __init__(self, y_ref, y_0, y_1, d):
+        pass
+
+    def project(self, x, y):
+        return x*cos(y), y
 
 
 class WinkelTripel:
