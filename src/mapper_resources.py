@@ -277,7 +277,7 @@ class Unit(Resource):
         Resource.__init__(self)
         try:
             self.name = d['name']
-            self.scale = float(d['scale'])
+            self.scale = float(d['scale'])*pi/108
         except KeyError as ke:
             raise MapperException(MX_MISSING_PARAMETER, 'Unit.__init__', str(ke), self.name or 'unit')
         except ValueError as ve:
