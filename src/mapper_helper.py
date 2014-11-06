@@ -155,9 +155,9 @@ def float_to_dms(t, is_latitude, mngr, prefix=''):
         if not (-90 <= t <= 90):
             raise MapperException(MX_WRONG_VALUE, 'float-to-dms', 'latitude', t)
         if t > 0:
-            d[prefix + 'card'] = mngr.get_string('cardinal-north')
+            d[prefix + 'card'] = mngr.translate_string('cardinal-north')
         else:
-            d[prefix + 'card'] = mngr.get_string('cardinal-south')
+            d[prefix + 'card'] = mngr.translate_string('cardinal-south')
     else:
         if not (-360 < t < 360):
             raise MapperException(MX_WRONG_VALUE, 'float-to-dms', 'longitude', t)
@@ -166,9 +166,9 @@ def float_to_dms(t, is_latitude, mngr, prefix=''):
         if t < -180:
             t = 360 + t
         if t > 0:
-            d[prefix + 'card'] = mngr.get_string('cardinal-east')
+            d[prefix + 'card'] = mngr.translate_string('cardinal-east')
         else:
-            d[prefix + 'card'] = mngr.get_string('cardinal-west')
+            d[prefix + 'card'] = mngr.translate_string('cardinal-west')
     t = abs(t)
     d[prefix + 'deg'] = int(t)
     t = (t - int(t)) * 60

@@ -284,19 +284,14 @@ class ResourceManager():
         else:
             return None
 
-    def get_string(self, d):
-        """ Find the named resource string or return None. """
-        if d in self.strings:
-            return self.strings[d]
-        elif self.parent is not None:
-            return self.parent.get_string(d)
-        else:
-            return None
-
     def translate_string(self, d):
         """ Replace the incoming string with a string resource, if it exists. If not, return the same value. """
-        s = self.get_string(d)
-        return d if s is None else s
+        if d is None:
+            return None
+        if d in self.strings:
+            return self.strings[d]
+        else:
+            return d
 
 
 class SvgMapper(ResourceManager):
@@ -411,17 +406,21 @@ class Map(ResourceManager):
             # get the projection
             proj = get_or_default(self.d, 'projection', 'default-projection')
             self.projection = self.resolve_projection(proj)
+            self.strings['projection-name'] = proj
+            self.strings['projection-class'] = self.projection.cls
             if self.projection is None:
                 raise MapperException(MX_UNRESOLVED_REFERENCE, 'Map.init_output', 'projection', proj)
             # then load the input file
             file_in = self.translate_string(self.d['file-in'])
             file_in = os.path.join(self.path, file_in)
+            self.strings['input-file'] = file_in
             self.input_svg = svgfig_mc.load(file_in)
             # define all the layers of transformation between the input and the output file.
             self.set_transforms(self.d['viewport'])
             # and then prepare the output file
             self.file_out = self.translate_string(self.d['file-out'])
             self.file_out = os.path.join(self.path, self.file_out)
+            self.strings['output-file'] = self.file_out
             self.init_output(get_or_default(self.d, 'append', False))
             self.mode = get_or_default(self.d, 'mode', 'keep')
             if self.mode not in {'keep', 'clip', 'crop'}:

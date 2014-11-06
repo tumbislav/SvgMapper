@@ -414,7 +414,7 @@ class Projection(Resource):
 
 class Match(Resource):
     """
-    Given an svg type, the name of a layer and/or a set of attribute matches, return the set of matching
+    Given an SVG type, the name of a layer and/or a set of attribute matches, return the set of matching
     SVG objects from the source file.
 
     A dictionary of the following form builds a named Match
