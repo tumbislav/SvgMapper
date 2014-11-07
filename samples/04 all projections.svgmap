@@ -25,10 +25,10 @@
     - kavrayskiy-vii
     - mercator
     - mercator-transverse
-#    - mollweide
-#    - robinson
-#    - sinusoidal
-#    - winkel-tripel
+    - mollweide
+    - robinson
+    - sinusoidal
+    - winkel-tripel
 
 - map: 
     name: init
@@ -363,3 +363,104 @@
             label:
                 format: Mercator Transverse
                 style: style-label
+
+- map:
+    name: mollweide
+    file-in: Iceland.svg
+    file-out: Projections.svg
+    append: true
+    projection: Mollweide
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [370, 250]
+        scale: 20
+    do:
+        - import:
+            from: 00 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: projection-class
+                style: style-label
+
+- map:
+    name: robinson
+    file-in: Iceland.svg
+    file-out: Projections.svg
+    append: true
+    projection: Robinson
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [510, 250]
+        scale: 20
+    do:
+        - import:
+            from: 00 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: projection-class
+                style: style-label
+
+- map:
+    name: sinusoidal
+    file-in: Iceland.svg
+    file-out: Projections.svg
+    append: true
+    projection: Sinusoidal
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [650, 250]
+        scale: 20
+    do:
+        - import:
+            from: 00 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: projection-class
+                style: style-label
+
+- map:
+    name: winkel-tripel
+    file-in: Iceland.svg
+    file-out: Projections.svg
+    append: true
+    projection: Winkel-Tripel
+    viewport:
+        rect-in: source
+        rect-world: world
+        center: [90, 350]
+        scale: 20
+    do:
+        - import:
+            from: 00 resources
+            elements:
+                project-landmass: _
+                vertical: _
+                horizontal: _
+        - place:
+            target: labels
+            at: [-60, 0]
+            label:
+                format: projection-class
+                style: style-label
+
