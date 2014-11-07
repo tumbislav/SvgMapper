@@ -30,7 +30,7 @@ with any version from the 3.x branch. A port to 3.x is planned for a future date
 Besides the standard Python library, SvgMapper needs [PyYaml](http://pyyaml.org/) to work. Most reasonably recent 
 versions will do, since we don't need any advanced functionality. In addition, if you wish to use the Robinson 
 projection, [SciPy](http://www.scipy.org/) is highly recommended. See 
-[projections]((https://github.com/tumbislav/SvgMapper/wiki/Projections) for details.
+[projections](https://github.com/tumbislav/SvgMapper/wiki/Projections) for details.
 
 SvgMapper uses a modified version of [SvgFig](http://code.google.com/p/svgfig/), developed by Jim Pivarski for basic 
 SVG file handling and, most importantly, as a path transformation engine. Since Jim's version had to be modified for 
