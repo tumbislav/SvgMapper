@@ -1,4 +1,28 @@
 # encoding: utf-8
+
+# projections.py, copyright 2014 by Marko Čibej <marko@cibej.org>
+#
+# This file is part of SvgMapper. Full sources and documentation
+# are available here: https://github.com/tumbislav/SvgMapper
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 3
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+#
+# Full licence is in the file LICENSE and at http://www.gnu.org/copyleft/gpl.html
+
+__author__ = 'Marko Čibej'
+
 from math import *
 from mapper_helper import *
 try:
@@ -16,9 +40,8 @@ def sinc(a):
     else:
         return a/sin(a)
 
-
 def oblique(x, y, x_p, y_p):
-    #TODO: unroll the Riemann sheets properly, clip and move the overhangs, smooth over the simgularities
+    #TODO: unroll the Riemann sheets properly, clip and move the overhangs, smooth over the singularities
     a = sin(y_p)*sin(y) - cos(y_p)*cos(y)*cos(x)
     y1 = asin(a)
     if sin(y_p)*cos(y) + cos(y_p)*sin(y)*cos(x)<0:
@@ -88,7 +111,6 @@ class Cassini:
         pass
 
     def project(self, x, y):
-    #TODO: fix the projection for objects that extend across 180th meridian
         return asin(cos(y)*sin(x)), atan2(tan(y), cos(x))
 
 

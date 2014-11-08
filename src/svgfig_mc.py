@@ -18,11 +18,15 @@
 # Full licence is in the file COPYING and at http://www.gnu.org/copyleft/gpl.html
 
 #----------------------------------------------------------------------------------------
-# This is the modified svgfig.py for use in svgMapper. If you need to use svgfig as such,
-# you should get it from Jim Pivarski's github site, and you should probably consider
-# using a version from 2.x branch, rather than 1.x.
+# This is the modified svgfig.py for use in SvgMapper. If you need to use svgfig as such,
+# you should get it from Jim Pivarski's site, https://code.google.com/p/svgfig/, and you
+# should probably consider using a version from 2.x branch, rather than 1.x.
 #
-# The following modifications have been made by Marko Čibej. All can be found by searching for #FIXED MČ:
+# Note that SvgFig is licenced under GPL 2, but SvgMapper is licenced under
+# the more recent GPL 3.
+#
+# The following modifications have been made by Marko Čibej.
+# All can be found by searching for #FIXED MČ:
 #   Encoding set to utf-8
 #   Changed indent levels for readability
 #   Corrected two errors in path parsing algorithm
