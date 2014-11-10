@@ -13,6 +13,8 @@ a starting point for new maps.
 For guidelines on contributing to SvgMapper, see [here](https://github.com/tumbislav/SvgMapper/wiki/Contributing).
 
 ##Installing
+To get the installable release, go over to [sourceforge](https://sourceforge.net/projects/svgmapper).
+
 Setting up SvgMapper is simple, you can find some notes [here](https://github.com/tumbislav/SvgMapper/wiki/Installing).
 
 ###Running SvgMapper
