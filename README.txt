@@ -3,4 +3,4 @@ projections and create an output SVG. Additionally, you can tell it to add stuff
 draw graticules, add symbols and so on. You can also use it for things like creating blank graticule files as
 a starting point for new maps.
 
-Help for installing, using and contributing can be found here: https://github.com/tumbislav/SvgMapper.
+Help for installing, using and contributing can be found here: https://github.com/tumbislav/SvgMapper/wiki.
