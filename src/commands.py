@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# mapper_commands.py, copyright 2014 by Marko Čibej <marko@cibej.org>
+# commands.py, copyright 2014 by Marko Čibej <marko@cibej.org>
 #
 # This file is part of SvgMapper. Full sources and documentation
 # are available here: https://github.com/tumbislav/SvgMapper
@@ -23,9 +23,9 @@
 
 __author__ = 'Marko Čibej'
 
-from mapper_resources import *
+from resources import *
 from math import pi
-from mapper_helper import logger
+from helper import logger
 
 from itertools import izip_longest
 

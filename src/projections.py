@@ -24,7 +24,7 @@
 __author__ = 'Marko Čibej'
 
 from math import *
-from mapper_helper import *
+from helper import *
 try:
     from scipy.interpolate import interp1d
 except ImportError:

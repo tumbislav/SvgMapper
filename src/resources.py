@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# mapper_resources.py, copyright 2014 by Marko Čibej <marko@cibej.org>
+# resources.py, copyright 2014 by Marko Čibej <marko@cibej.org>
 #
 # This file is part of SvgMapper. Full sources and documentation
 # are available here: https://github.com/tumbislav/SvgMapper
@@ -24,7 +24,7 @@
 __author__ = 'Marko Čibej'
 
 import copy
-from mapper_helper import *
+from helper import *
 from projections import *
 import svgfig_mc
 import re

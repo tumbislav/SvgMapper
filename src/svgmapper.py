@@ -23,13 +23,12 @@
 
 __author__ = 'Marko Čibej'
 
-from mapper_commands import *
-from mapper_resources import *
-from mapper_helper import *
+from commands import *
+from resources import *
+from helper import *
 import svgfig_mc
 from math import pi
 import os
-import argparse
 import traceback
 import yaml
 
@@ -486,9 +485,7 @@ class Map(ResourceManager):
         mtc_name = scaler = None
         if isinstance(d, basestring):
             mtc_name = d
-            align = [0, 0, 1, 1]
         else:
-            align = get_or_default(d, 'align', [0, 0, 1, 1])
             if 'match' in d:
                 mtc_name = d['match']
         if mtc_name:
@@ -526,7 +523,6 @@ class Map(ResourceManager):
         d_out = get_or_default(d, 'scale', 2/(abs(dx_in) + abs(dy_in)))
         x_out0, y_out0 = self.projection.project(*self.rect_world_rad.centerpoint())
         self.scale_out = lambda x, y: (d_out*(x - x_out0) + x_out1, d_out*(y_out0 - y) + y_out1)
-
 
     def init_output(self, append):
         """
@@ -605,50 +601,3 @@ class Map(ResourceManager):
         g = self.get_output_layer(layer)
         g.append(svg_object)
         return g
-
-
-def main(config, resources=None, maps=None, simulate=False):
-    logger.info('Starting job')
-    with SvgMapper() as mapper:
-        mapper.load_config(config, resources)
-        if maps:
-            mapper.replace_targets(maps)
-        if not simulate:
-            mapper.run()
-    logger.info('Finished')
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Transform maps in SVG format in various ways.')
-    parser.add_argument('config_file', help='The name of the configuration file')
-    parser.add_argument('-r', '--resource', help='Additional resource file(s)',
-                        action='append', metavar='resource_file')
-    parser.add_argument('-m', '--map', help='Map(s) to run instead of those listed in config file', metavar='map_name')
-    parser.add_argument('-v', '--verbosity', help='Set verbosity: 0=errors only, 1=warnings, 2=info, 3=debug',
-                        type=int, choices=range(0, 3), dest='verbosity')
-    parser.add_argument('-l', '--log', help='Output to named log file', metavar=('level(0-3)', 'logFile'), nargs=2)
-    parser.add_argument('-s', '--simulate', help='Don\'t actually do anything, just parse all the configurations',
-                        action='store_true')
-    return parser.parse_args()
-
-
-def set_logging(the_log, verbosity):
-    log_levels = [logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
-    logger.setLevel(logging.DEBUG)
-    if the_log:
-        level = log_levels[int(the_log[0])]
-        lf = logging.FileHandler(the_log[1], mode='w')
-        lf.setLevel(level)
-        lf.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
-        logger.addHandler(lf)
-    lc = logging.StreamHandler()
-    if verbosity:
-        lc.setLevel(log_levels[verbosity])
-    else:
-        lc.setLevel(log_levels[2])
-    logger.addHandler(lc)
-
-if __name__ == '__main__':
-    a = parse_args()
-    set_logging(a.log, a.verbosity)
-    main(a.config_file, a.resource, a.map, a.simulate)

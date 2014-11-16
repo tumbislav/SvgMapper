@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# mapper_helper.py, copyright 2014 by Marko Čibej <marko@cibej.org>
+# helper.py, copyright 2014 by Marko Čibej <marko@cibej.org>
 #
 # This file is part of SvgMapper. Full sources and documentation
 # are available here: https://github.com/tumbislav/SvgMapper

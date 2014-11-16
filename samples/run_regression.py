@@ -2,9 +2,7 @@
 __author__ = 'Marko Čibej'
 
 
-import svgmapper
-from os import sep
-import logging
+from svgmapper.main import main, set_logging
 
 
 _samples = {
@@ -15,7 +13,7 @@ _samples = {
 }
 
 
-svgmapper.set_logging([0, 'regression.log'], 1)
+set_logging([0, 'regression.log'], 1)
 for c in _samples:
     if _samples[c]:
-        svgmapper.main(c)
+        main(c)
